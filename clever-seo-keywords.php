@@ -159,7 +159,9 @@ function print_clever_seo_keywords() {
 }
 
 function scrub_clever_seo_keyword($keyword) {
-	return preg_replace("/^( )*|( )*$/", "", $keyword);
+	$keyword = preg_replace("/^( )*|( )*|$/", "", $keyword);
+	$keyword = preg_replace("/&#039;/", "'", $keyword);
+	return $keyword;
 }
 
 function check_clever_seo_keywords_dependencies_are_active($plugin_name, $dependencies) {
