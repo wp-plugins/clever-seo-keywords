@@ -43,26 +43,26 @@ function register_clever_seo_redirect_settings() {
 
 }
 
-add_action( 'save_post', 'clever_seo_keywords_save_post' );
-function clever_seo_keywords_save_post( $postid ) {
+// add_action( 'save_post', 'clever_seo_keywords_save_post' );
+// function clever_seo_keywords_save_post( $postid ) {
 
-	$my_revision = tom_get_row("posts", "*", "
-		post_type='revision' AND 
-		ID=".$postid);
+// 	$my_revision = tom_get_row("posts", "*", "
+// 		post_type='revision' AND 
+// 		ID=".$postid);
 
-	if ($my_revision->post_parent == "") {
-	  $my_post = tom_get_row("posts", "*", "
-	  	post_type IN ('page', 'post') AND 
-	  	ID=".$postid);
-	} else {
-	  $my_post = tom_get_row("posts", "*", "
-	  	post_type IN ('page', 'post') AND 
-	  	ID=".$my_revision->post_parent);
-  }
+// 	if ($my_revision->post_parent == "") {
+// 	  $my_post = tom_get_row("posts", "*", "
+// 	  	post_type IN ('page', 'post') AND 
+// 	  	ID=".$postid);
+// 	} else {
+// 	  $my_post = tom_get_row("posts", "*", "
+// 	  	post_type IN ('page', 'post') AND 
+// 	  	ID=".$my_revision->post_parent);
+//   }
 
-  create_or_update_the_clever_seo_keyword($my_post);
+//   create_or_update_the_clever_seo_keyword($my_post);
 
-}
+// }
 
 function create_or_update_the_clever_seo_keyword($my_post) {
   if ($my_post != null && $my_post->ID != 0) {
