@@ -159,8 +159,8 @@ function print_clever_seo_keywords() {
 }
 
 function scrub_clever_seo_keyword($keyword) {
-	$keyword = preg_replace("/^( )*|( )*|$/", "", $keyword);
-	$keyword = preg_replace("/&#039;/", "'", $keyword);
+	$keyword = preg_replace("/^( )*|( )*$/", "", $keyword);
+	$keyword = preg_replace("/(&#039;|#039;)/", "'", $keyword);
 	return $keyword;
 }
 
