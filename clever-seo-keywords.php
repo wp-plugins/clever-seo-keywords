@@ -120,17 +120,19 @@ function clever_seo_keywords_initial_page() {
 function update_the_clever_seo_keywords($my_post) {
 	if ($my_post != null) {
 
+		$ignore_word_regex = "(A|About|As|Of|Our|The|This|Is|Are|With|And|All|&|>|<)";
+
 		if ($html = @file_get_html(get_permalink($my_post->ID))) {
 			$keywords_list = array();
 			foreach($html->find("h1,h2,h3,h4,h5,h6,h7,h8,h9,h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,h7 a,h8 a,h9 a") as $e) {
 				if (strlen($e->outertext) >= 2) {
-			    $keywords_list = array_merge($keywords_list, preg_split("/(,|-|:| )/", trim(preg_replace("/(The|This|Is|Are|With|And|All|&|>|<)/", "", strip_tags($e->outertext)))), (array)preg_split("/(,|-|:)/", trim(str_replace(">", "", strip_tags($e->outertext)))));
+			    $keywords_list = array_merge($keywords_list, preg_split("/(,|-|:| )/", trim(preg_replace("/".$ignore_word_regex."/", "", strip_tags($e->outertext)))), (array)preg_split("/(,|-|:)/", trim(str_replace(">", "", strip_tags($e->outertext)))));
 				}
 		  }
 
-			$keywords_list = array_merge($keywords_list, preg_split("/(,|-|:|\|| )/", trim(preg_replace("/(The|This|Is|Are|With|And|All|&|>|<)/", "", strip_tags(get_option("blogname"))))), (array)preg_split("/(,|-|:|\|)/", trim(str_replace(">", "", strip_tags(get_option("blogname"))))));
+			$keywords_list = array_merge($keywords_list, preg_split("/(,|-|:|\|| )/", trim(preg_replace("/".$ignore_word_regex."/", "", strip_tags(get_option("blogname"))))), (array)preg_split("/(,|-|:|\|)/", trim(str_replace(">", "", strip_tags(get_option("blogname"))))));
 
-			$keywords_list = array_merge($keywords_list, preg_split("/(,|-|:|\|| )/", trim(preg_replace("/(The|This|Is|Are|With|And|All|&|>|<)/", "", strip_tags(get_option("blogdescription"))))), (array)preg_split("/(,|-|:|\|)/", trim(str_replace(">", "", strip_tags(get_option("blogdescription"))))));
+			$keywords_list = array_merge($keywords_list, preg_split("/(,|-|:|\|| )/", trim(preg_replace("/".$ignore_word_regex."/", "", strip_tags(get_option("blogdescription"))))), (array)preg_split("/(,|-|:|\|)/", trim(str_replace(">", "", strip_tags(get_option("blogdescription"))))));
 
 			$index = 0;
 			foreach ($keywords_list as $value) {
