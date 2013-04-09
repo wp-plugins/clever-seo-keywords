@@ -128,6 +128,10 @@ function update_the_clever_seo_keywords($my_post) {
 				}
 		  }
 
+			$keywords_list = array_merge($keywords_list, preg_split("/(,|-|:|\|| )/", trim(preg_replace("/(The|This|Is|Are|With|And|All|&|>|<)/", "", strip_tags(get_option("blogname"))))), (array)preg_split("/(,|-|:|\|)/", trim(str_replace(">", "", strip_tags(get_option("blogname"))))));
+
+			$keywords_list = array_merge($keywords_list, preg_split("/(,|-|:|\|| )/", trim(preg_replace("/(The|This|Is|Are|With|And|All|&|>|<)/", "", strip_tags(get_option("blogdescription"))))), (array)preg_split("/(,|-|:|\|)/", trim(str_replace(">", "", strip_tags(get_option("blogdescription"))))));
+
 			$index = 0;
 			foreach ($keywords_list as $value) {
 				$keywords_list[$index] = scrub_clever_seo_keyword(tom_titlize_str($keywords_list[$index]));
