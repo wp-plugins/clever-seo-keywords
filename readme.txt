@@ -4,7 +4,7 @@ Donate link:
 Tags: seo, plugin, keyword, keywords, meta, metadata
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 1.0
+Stable tag: 2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,7 +20,7 @@ A wordpress plugin that allows you to auto create keywords based on the headers 
 
 2) Download the following files:
 http://downloads.wordpress.org/plugin/tom-m8te.1.4.2.zip
-http://downloads.wordpress.org/plugin/clever-seo-keywords.1.0.zip
+http://downloads.wordpress.org/plugin/clever-seo-keywords.2.0.zip
 
 3) Login to WordPress admin, click on Plugins / Add New / Upload, then upload the zip file you just downloaded.
 
@@ -29,11 +29,19 @@ http://downloads.wordpress.org/plugin/clever-seo-keywords.1.0.zip
 
 == Changelog ==
 
+= 2.0 =
+
+* Get the user to update the keywords, across the site, every 30 days.
+
 = 1.0 =
 
 * Initial Commit
 
 == Upgrade notice ==
+
+= 2.0 =
+
+* Get the user to update the keywords, across the site, every 30 days.
 
 = 1.0 =
 

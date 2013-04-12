@@ -10,13 +10,13 @@ Installation:
 
 2) Download the following file:
 
-http://downloads.wordpress.org/plugin/clever-seo-keywords.1.0.zip
+http://downloads.wordpress.org/plugin/clever-seo-keywords.2.0.zip
 
 3) Login to WordPress admin, click on Plugins / Add New / Upload, then upload the zip file you just downloaded.
 
 4) Activate the plugin.
 
-Version: 1.0
+Version: 2.0
 Author: TheOnlineHero - Tom Skroza
 License: GPL2
 */
@@ -31,10 +31,25 @@ function register_clever_seo_keywords_page() {
   add_menu_page('Clever Keywords', 'Clever Keywords', 'manage_options', 'clever-seo-keywords/clever-seo-keywords.php', 'clever_seo_keywords_initial_page');
 }
 
-//call register settings function
-add_action( 'admin_init', 'register_clever_seo_redirect_settings' );
-function register_clever_seo_redirect_settings() {
+add_action('admin_enqueue_scripts', 'clever_seo_keywords_admin_theme_style');
+function clever_seo_keywords_admin_theme_style() {
+  wp_enqueue_style('clever_seo_keywords', plugins_url('/css/style.css', __FILE__));
+  wp_enqueue_script('clever_seo_keywords', plugins_url('/js/application.js', __FILE__));
+}
 
+//call register settings function
+add_action( 'admin_init', 'register_clever_seo_keywords_settings' );
+function register_clever_seo_keywords_settings() {
+
+	register_setting( 'clever-seo-keywords-settings-group', 'clever_seo_keywords_last_update' );
+
+	$date = new DateTime();
+	if (get_option("clever_seo_keywords_last_update") == "") {
+		echo("<div id='update_clever_seo_keywords_msg' class='updated below-h2'><p>To add keywords to your pages, please <a href='".get_option("siteurl")."/wp-admin/admin.php?page=clever-seo-keywords/clever-seo-keywords.php'>go to this page</a> and click on &#8220;Update Keywords Across All Pages&#8221;.</p></div>");
+	} else if ((clever_seo_keyword_date_diff_ts(get_option("clever_seo_keywords_last_update"),$date->getTimestamp())) > 30) {
+		echo("<div id='update_clever_seo_keywords_msg' class='updated below-h2'><p>Its been a while since you last updated your keywords, please <a href='".get_option("siteurl")."/wp-admin/admin.php?page=clever-seo-keywords/clever-seo-keywords.php'>go to this page</a> and click on &#8220;Update Keywords Across All Pages&#8221;. You can <a id='ignore_clever_seo_keywords_warning' href='".get_option("siteurl")."/wp-admin/admin.php?page=clever-seo-keywords/clever-seo-keywords.php&action=ignore_clever_seo_keywords_warning'>ignore this warning</a>.</p></div>");
+	}
+	
   @check_clever_seo_keywords_dependencies_are_active(
     "Clever SEO Keywords", 
     array(
@@ -42,27 +57,6 @@ function register_clever_seo_redirect_settings() {
   );
 
 }
-
-// add_action( 'save_post', 'clever_seo_keywords_save_post' );
-// function clever_seo_keywords_save_post( $postid ) {
-
-// 	$my_revision = tom_get_row("posts", "*", "
-// 		post_type='revision' AND 
-// 		ID=".$postid);
-
-// 	if ($my_revision->post_parent == "") {
-// 	  $my_post = tom_get_row("posts", "*", "
-// 	  	post_type IN ('page', 'post') AND 
-// 	  	ID=".$postid);
-// 	} else {
-// 	  $my_post = tom_get_row("posts", "*", "
-// 	  	post_type IN ('page', 'post') AND 
-// 	  	ID=".$my_revision->post_parent);
-//   }
-
-//   create_or_update_the_clever_seo_keyword($my_post);
-
-// }
 
 function create_or_update_the_clever_seo_keyword($my_post) {
   if ($my_post != null && $my_post->ID != 0) {
@@ -85,7 +79,11 @@ function create_or_update_the_clever_seo_keyword($my_post) {
 }
 
 function clever_seo_keywords_initial_page() {
-	if ($_POST["action"] == "Update Keywords Across All Pages") {
+	$date = new DateTime();
+	if ($_GET["action"] == "ignore_clever_seo_keywords_warning") {
+		update_option("clever_seo_keywords_last_update", $date->getTimestamp());
+	} else if ($_POST["action"] == "Update Keywords Across All Pages") {
+		update_option("clever_seo_keywords_last_update", $date->getTimestamp());
 		$all_posts = tom_get_results("posts", "*", "post_type IN ('page', 'post')");
 		foreach ($all_posts as $my_post) {
 			create_or_update_the_clever_seo_keyword($my_post);
@@ -136,7 +134,11 @@ function update_the_clever_seo_keywords($my_post) {
 
 			$index = 0;
 			foreach ($keywords_list as $value) {
-				$keywords_list[$index] = scrub_clever_seo_keyword(tom_titlize_str($keywords_list[$index]));
+				if (strlen($keywords_list[$index]) > 2) {
+					$keywords_list[$index] = scrub_clever_seo_keyword(tom_titlize_str($keywords_list[$index]));					
+				} else {
+					$keywords_list[$index] = null;
+				}	
 				$index++;
 			}
 			$keywords_list = array_unique(array_filter( $keywords_list, 'strlen' ));
@@ -164,6 +166,11 @@ function scrub_clever_seo_keyword($keyword) {
 	$keyword = preg_replace("/^( )*|( )*$/", "", $keyword);
 	$keyword = preg_replace("/(&#039;|#039;)/", "'", $keyword);
 	return $keyword;
+}
+
+function clever_seo_keyword_date_diff_ts($start_ts, $end_ts) {
+    $diff = $end_ts - $start_ts;
+    return round($diff / 86400);
 }
 
 function check_clever_seo_keywords_dependencies_are_active($plugin_name, $dependencies) {
