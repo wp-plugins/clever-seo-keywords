@@ -91,6 +91,7 @@ function clever_seo_keywords_initial_page() {
 			create_or_update_the_clever_seo_keyword($my_post);
 		}
 		$_GET["message"] = "Your keywords have been updated across the site.";
+		echo("<script language='javascript'>jQuery('#update_clever_seo_keywords_msg').hide();</script>");
 	}
 	?>
 
