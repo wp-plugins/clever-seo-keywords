@@ -6,11 +6,13 @@ Description: A wordpress plugin that allows you to auto create keywords based on
 
 Installation:
 
-1) Install WordPress 3.5.2 or higher
+1) Install WordPress 3.5.1 or higher
 
-2) Download the following file:
+2) Download the latest from:
 
-http://downloads.wordpress.org/plugin/clever-seo-keywords.2.0.zip
+http://wordpress.org/extend/plugins/tom-m8te 
+
+http://wordpress.org/extend/plugins/clever-seo-keywords
 
 3) Login to WordPress admin, click on Plugins / Add New / Upload, then upload the zip file you just downloaded.
 
@@ -42,15 +44,6 @@ add_action( 'admin_init', 'register_clever_seo_keywords_settings' );
 function register_clever_seo_keywords_settings() {
 
 	register_setting( 'clever-seo-keywords-settings-group', 'clever_seo_keywords_last_update' );
-
-	$date = new DateTime();
-	if (!isset($_GET["message"])) {
-		if (get_option("clever_seo_keywords_last_update") == "") {
-			echo("<div id='update_clever_seo_keywords_msg' class='updated below-h2'><p>To add keywords to your pages, please <a href='".get_option("siteurl")."/wp-admin/admin.php?page=clever-seo-keywords/clever-seo-keywords.php'>go to this page</a> and click on &#8220;Update Keywords Across All Pages&#8221;.</p></div>");
-		} else if ((clever_seo_keyword_date_diff_ts(get_option("clever_seo_keywords_last_update"),$date->getTimestamp())) > 30) {
-			echo("<div id='update_clever_seo_keywords_msg' class='updated below-h2'><p>Its been a while since you last updated your keywords, please <a href='".get_option("siteurl")."/wp-admin/admin.php?page=clever-seo-keywords/clever-seo-keywords.php'>go to this page</a> and click on &#8220;Update Keywords Across All Pages&#8221;. You can <a id='ignore_clever_seo_keywords_warning' href='".get_option("siteurl")."/wp-admin/admin.php?page=clever-seo-keywords/clever-seo-keywords.php&action=ignore_clever_seo_keywords_warning'>ignore this warning</a>.</p></div>");
-		}
-	}
 	
   @check_clever_seo_keywords_dependencies_are_active(
     "Clever SEO Keywords", 
@@ -59,6 +52,19 @@ function register_clever_seo_keywords_settings() {
   );
 
 }
+
+function clever_seo_keyword_monthly_notice(){
+	$date = new DateTime();
+	if (!isset($_GET["message"])) {
+		if (get_option("clever_seo_keywords_last_update") == "") {
+			echo("<div id='update_clever_seo_keywords_msg' class='updated below-h2'><p>To add keywords to your pages, please <a href='".get_option("siteurl")."/wp-admin/admin.php?page=clever-seo-keywords/clever-seo-keywords.php'>go to this page</a> and click on &#8220;Update Keywords Across All Pages&#8221;.</p></div>");
+		} else if ((clever_seo_keyword_date_diff_ts(get_option("clever_seo_keywords_last_update"),$date->getTimestamp())) > 30) {
+			echo("<div id='update_clever_seo_keywords_msg' class='updated below-h2'><p>Its been a while since you last updated your keywords, please <a href='".get_option("siteurl")."/wp-admin/admin.php?page=clever-seo-keywords/clever-seo-keywords.php'>go to this page</a> and click on &#8220;Update Keywords Across All Pages&#8221;. You can <a id='ignore_clever_seo_keywords_warning' href='".get_option("siteurl")."/wp-admin/admin.php?page=clever-seo-keywords/clever-seo-keywords.php&action=ignore_clever_seo_keywords_warning'>ignore this warning</a>.</p></div>");
+		}
+	}
+}
+
+add_action( 'admin_notices', 'clever_seo_keyword_monthly_notice' );
 
 function create_or_update_the_clever_seo_keyword($my_post) {
   if ($my_post != null && $my_post->ID != 0) {
