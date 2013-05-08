@@ -122,6 +122,7 @@ function clever_seo_keywords_initial_page() {
   </div>
 
   <?php
+  tom_add_social_share_links("http://wordpress.org/extend/plugins/clever-seo-keywords/");
 }
 
 function update_the_clever_seo_keywords($my_post) {
