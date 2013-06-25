@@ -1,0 +1,6 @@
+#update_clever_seo_keywords_msg {
+	margin: 0;
+}
+body.update-php #update_clever_seo_keywords_msg {
+	display: none;
+}
