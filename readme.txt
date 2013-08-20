@@ -3,22 +3,22 @@ Contributors: MMDeveloper
 Donate link: 
 Tags: seo, plugin, keyword, keywords, meta, metadata
 Requires at least: 3.3
-Tested up to: 3.5.1
-Stable tag: 2.2
+Tested up to: 3.6
+Stable tag: 3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Auto create keywords based on your headers.
+Auto create keywords based on your headings.
 
 == Description ==
 
-A wordpress plugin that allows you to auto create keywords based on the headers within your pages.
+A wordpress plugin that allows you to auto create keywords based on the headings within your pages.
 
 This plugin uses Simple Html DOM, for info go to http://sourceforge.net/projects/simplehtmldom/
 
 == Installation ==
 
-1) Install WordPress 3.5 or higher
+1) Install WordPress 3.6 or higher
 
 2) Download the latest from:
 
@@ -32,6 +32,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 
 == Changelog ==
+
+= 3.0 =
+
+* Allows you to select which keywords it finds on the page, that you actually want to use.
 
 = 2.2 =
 
@@ -50,6 +54,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 * Initial Commit
 
 == Upgrade notice ==
+
+= 3.0 =
+
+* Allows you to select which keywords it finds on the page, that you actually want to use.
 
 = 2.2 =
 

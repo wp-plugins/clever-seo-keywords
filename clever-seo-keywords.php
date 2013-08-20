@@ -6,7 +6,7 @@ Description: A wordpress plugin that allows you to auto create keywords based on
 
 Installation:
 
-1) Install WordPress 3.5.2 or higher
+1) Install WordPress 3.6 or higher
 
 2) Download the latest from:
 
@@ -18,7 +18,7 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 4) Activate the plugin.
 
-Version: 2.2
+Version: 3.0
 Author: TheOnlineHero - Tom Skroza
 License: GPL2
 */
@@ -84,95 +84,25 @@ function register_clever_seo_keywords_page() {
 	}
 }
 
+function clever_seo_keywords_initial_page() {
+	if (are_clever_seo_keywords_dependencies_installed()) {
+		?>
+	  <h2>Clever SEO Keywords</h2>
+	  <p>Make sure that you have the following line within the head tag of your header.php template file:</p>
+	  <p>
+	  	<textarea cols="100"><?php echo("<meta name=\"keywords\" content=\"<?php if (function_exists('print_clever_seo_keywords')) {print_clever_seo_keywords();} ?>\" />"); ?></textarea>
+	  </p>
+	  <p>Then go to each page and select the keywords you want in the Clever SEO Keyword list.</p>
+	  <?php
+	  tom_add_social_share_links("http://wordpress.org/extend/plugins/clever-seo-keywords/");
+	}
+}
+
 add_action('admin_enqueue_scripts', 'clever_seo_keywords_admin_theme_style');
 function clever_seo_keywords_admin_theme_style() {
 	if (are_clever_seo_keywords_dependencies_installed()) {
 	  wp_enqueue_style('clever_seo_keywords', plugins_url('/css/style.css', __FILE__));
 	  wp_enqueue_script('clever_seo_keywords', plugins_url('/js/application.js', __FILE__));
-	}
-}
-
-//call register settings function
-add_action( 'admin_init', 'register_clever_seo_keywords_settings' );
-function register_clever_seo_keywords_settings() {
-	register_setting( 'clever-seo-keywords-settings-group', 'clever_seo_keywords_last_update' );
-}
-
-function clever_seo_keyword_monthly_notice(){
-	if (are_clever_seo_keywords_dependencies_installed()) {
-		$date = new DateTime();
-		if (!isset($_GET["message"])) {
-			if (get_option("clever_seo_keywords_last_update") == "") {
-				echo("<div id='update_clever_seo_keywords_msg' class='updated below-h2'><p>To add keywords to your pages, please <a href='".get_option("siteurl")."/wp-admin/admin.php?page=clever-seo-keywords/clever-seo-keywords.php'>go to this page</a> and click on &#8220;Update Keywords Across All Pages&#8221;.</p></div>");
-			} else if ((clever_seo_keyword_date_diff_ts(get_option("clever_seo_keywords_last_update"),$date->getTimestamp())) > 30) {
-				echo("<div id='update_clever_seo_keywords_msg' class='updated below-h2'><p>Its been a while since you last updated your keywords, please <a href='".get_option("siteurl")."/wp-admin/admin.php?page=clever-seo-keywords/clever-seo-keywords.php'>go to this page</a> and click on &#8220;Update Keywords Across All Pages&#8221;. You can <a id='ignore_clever_seo_keywords_warning' href='".get_option("siteurl")."/wp-admin/admin.php?page=clever-seo-keywords/clever-seo-keywords.php&action=ignore_clever_seo_keywords_warning'>ignore this warning</a>.</p></div>");
-			}
-		}
-	}
-}
-
-add_action( 'admin_notices', 'clever_seo_keyword_monthly_notice' );
-
-function create_or_update_the_clever_seo_keyword($my_post) {
-	if (are_clever_seo_keywords_dependencies_installed()) {
-	  if ($my_post != null && $my_post->ID != 0) {
-		  // Check if this is a new record.\
-		  $postmeta_row = tom_get_row("postmeta", "*", "
-		  	meta_key = '_clever_seo_keywords_words' AND 
-		  	post_id =".$my_post->ID);
-		 	if ($postmeta_row != null) {
-		 		// This is an existing record.
-		 		// Update statement - Update keywords.
-		 		update_the_clever_seo_keywords($my_post);
-		 	} else {
-
-		 		// This is a new record.
-		 		// Insert Statement - Insert keywords.
-		 		tom_insert_record("postmeta", array("post_id" => $my_post->ID, "meta_key" => "_clever_seo_keywords_words", "meta_value" => ""));
-		 		update_the_clever_seo_keywords($my_post);
-		 	}
-	  }
-	}
-}
-
-function clever_seo_keywords_initial_page() {
-	if (are_clever_seo_keywords_dependencies_installed()) {
-		$date = new DateTime();
-		if ($_GET["action"] == "ignore_clever_seo_keywords_warning") {
-			update_option("clever_seo_keywords_last_update", $date->getTimestamp());
-		} else if ($_POST["action"] == "Update Keywords Across All Pages") {
-			update_option("clever_seo_keywords_last_update", $date->getTimestamp());
-			$all_posts = tom_get_results("posts", "*", "post_type IN ('page', 'post')");
-			foreach ($all_posts as $my_post) {
-				create_or_update_the_clever_seo_keyword($my_post);
-			}
-			$_GET["message"] = "Your keywords have been updated across the site.";
-			echo("<script language='javascript'>jQuery('#update_clever_seo_keywords_msg').hide();</script>");
-		}
-		?>
-
-		<div class="wrap a-form">
-	  <h2>Clever SEO Keywords</h2>
-	  <p>Make sure that you have the following line within the head tag of your header.php template file:</p>
-	  <p>
-	  	<textarea cols="100"><?php echo("<meta name=\"keywords\" content=\"<?php if (function_exists('print_clever_seo_keywords')) {print_clever_seo_keywords();} ?>\" />");?></textarea>
-	  </p>
-	  <?php
-		  if (isset($_GET["message"]) && $_GET["message"] != "") {
-		    echo("<div class='updated below-h2'><p>".$_GET["message"]."</p></div>");
-		  }
-	  ?>
-	  <div class="postbox " style="display: block; ">
-	  <div class="inside">
-	    <form action="" method="post">
-	      <input type="submit" name="action" value="Update Keywords Across All Pages" />
-	    </form>
-	  </div>
-	  </div>
-	  </div>
-
-	  <?php
-	  tom_add_social_share_links("http://wordpress.org/extend/plugins/clever-seo-keywords/");
 	}
 }
 
@@ -204,15 +134,7 @@ function update_the_clever_seo_keywords($my_post) {
 					$index++;
 				}
 				$keywords_list = array_unique(array_filter( $keywords_list, 'strlen' ));
-
-				tom_update_record(
-					"postmeta", 
-					array("meta_value" => implode(",", $keywords_list)), 
-					array(
-						"meta_key" => "_clever_seo_keywords_words",
-						"post_id" => $my_post->ID
-					)
-				);
+				return implode(",", $keywords_list);
 			}
 		}
 	}
@@ -235,11 +157,90 @@ function scrub_clever_seo_keyword($keyword) {
 	}
 }
 
-function clever_seo_keyword_date_diff_ts($start_ts, $end_ts) {
-	if (are_clever_seo_keywords_dependencies_installed()) {
-    $diff = $end_ts - $start_ts;
-    return round($diff / 86400);
-	}
+/* Define the custom box */
+
+add_action( 'add_meta_boxes', 'clever_keywords_add_custom_box' );
+
+// backwards compatible (before WP 3.0)
+// add_action( 'admin_init', 'clever_keywords_add_custom_box', 1 );
+
+/* Do something with the data entered */
+add_action( 'save_post', 'clever_keywords_save_postdata' );
+
+/* Adds a box to the main column on the Post and Page edit screens */
+function clever_keywords_add_custom_box() {
+    $screens = array( 'post', 'page' );
+    foreach ($screens as $screen) {
+        add_meta_box(
+            'clever_keywords_sectionid',
+            __( 'Clever SEO Keywords', 'clever_keywords_textdomain' ),
+            'clever_keywords_inner_custom_box',
+            $screen
+        );
+    }
+}
+
+/* Prints the box content */
+function clever_keywords_inner_custom_box( $post ) {
+
+  // Use nonce for verification
+  wp_nonce_field( plugin_basename( __FILE__ ), 'clever_keywords_noncename' );
+
+  $possible_keywords = explode(",", update_the_clever_seo_keywords($post));
+
+  // The actual fields for data entry
+  // Use get_post_meta to retrieve an existing value from the database and use the value for the form
+  $value = get_post_meta( $post->ID, '_clever_seo_keywords_words', true );
+
+  $current_keywords = explode(",", $value);
+
+  ?>
+  <div id="clever_keywords_controls">
+  	<p>Select the keywords you want by clicking on them and then save the page/post. The green keywords are currently being used, while the grey ones are not.</p>
+	  <ul id="possible_clever_keywords">
+	  	<?php
+		  foreach ($possible_keywords as $keyword) {
+		  	?>
+		  	<li><a <?php if (in_array($keyword, $current_keywords)) { echo("class='active'"); } ?> href="#"><?php echo($keyword); ?></a></li>
+		  	<?php
+		  }
+		  ?>
+		</ul>
+		<?php
+	  echo '<input type="hidden" id="clever_keywords_new_field" name="clever_keywords_new_field" value="'.esc_attr($value).'" size="25" />';
+	?>
+	</div>
+	<?php
+}
+
+/* When the post is saved, saves our custom data */
+function clever_keywords_save_postdata( $post_id ) {
+
+  // First we need to check if the current user is authorised to do this action. 
+  if ( 'page' == $_REQUEST['post_type'] ) {
+    if ( ! current_user_can( 'edit_page', $post_id ) )
+        return;
+  } else {
+    if ( ! current_user_can( 'edit_post', $post_id ) )
+        return;
+  }
+
+  // Secondly we need to check if the user intended to change this value.
+  if ( ! isset( $_POST['clever_keywords_noncename'] ) || ! wp_verify_nonce( $_POST['clever_keywords_noncename'], plugin_basename( __FILE__ ) ) )
+      return;
+
+  // Thirdly we can save the value to the database
+
+  //if saving in a custom table, get post_ID
+  $post_ID = $_POST['post_ID'];
+  //sanitize user input
+  $mydata = sanitize_text_field( $_POST['clever_keywords_new_field'] );
+
+  // Do something with $mydata 
+  // either using 
+  add_post_meta($post_ID, '_clever_seo_keywords_words', $mydata, true) or
+    update_post_meta($post_ID, '_clever_seo_keywords_words', $mydata);
+  // or a custom table (see Further Reading section below)
 }
 
 ?>
