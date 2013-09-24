@@ -4,7 +4,7 @@ Donate link:
 Tags: seo, plugin, keyword, keywords, meta, metadata, description
 Requires at least: 3.3
 Tested up to: 3.6
-Stable tag: 4.0
+Stable tag: 4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,6 +33,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 == Changelog ==
 
+= 4.1 =
+
+* Don't display keywords or description meta tags if you haven't selected keywords to display.
+
 = 4.0 =
 
 * If you have upgraded from a previous version, please remove the clever keyword code from your template (The one that looks like: <meta name="keywords" content="<?php if (function_exists('print_clever_seo_keywords')) {print_clever_seo_keywords();} ?>" />). This version doesn't need it. New feature - this plugin now creates/modifies your page's description metadata.
@@ -60,6 +64,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 * Initial Commit
 
 == Upgrade notice ==
+
+= 4.1 =
+
+* Don't display keywords or description meta tags if you haven't selected keywords to display.
 
 = 4.0 =
 
