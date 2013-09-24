@@ -2,7 +2,7 @@
 /*
 Plugin Name: Clever SEO Keywords
 Plugin URI: http://wordpress.org/extend/plugins/clever-seo-keywords/
-Description: A wordpress plugin that allows you to auto create keywords based on the headers within your pages.
+Description: A wordpress plugin that allows you to auto create meta keywords and description based on the headers within your pages.
 
 Installation:
 
@@ -18,8 +18,7 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 4) Activate the plugin.
 
-Version: 3.0
-Author: TheOnlineHero - Tom Skroza
+Version: 4.0
 License: GPL2
 */
 
@@ -64,7 +63,7 @@ function register_clever_seo_keywords_install_dependency_settings() {
       switch ($_GET["clever_seo_keywords_install_dependency"]) {
         case 'tom-m8te':  
           activate_plugin('tom-m8te/tom-m8te.php', 'plugins.php?error=false&plugin=tom-m8te.php');
-          wp_redirect(get_option("siteurl")."/wp-admin/admin.php?page=clever-seo-keywords/clever-seo-keywords.php");
+          wp_redirect(get_option("siteurl")."/wp-admin/");
           exit();
           break;   
         default:
@@ -77,26 +76,57 @@ function register_clever_seo_keywords_install_dependency_settings() {
   }
 }
 
-add_action('admin_menu', 'register_clever_seo_keywords_page');
-function register_clever_seo_keywords_page() {
-	if (are_clever_seo_keywords_dependencies_installed()) {
-  	add_menu_page('Clever Keywords', 'Clever Keywords', 'manage_options', 'clever-seo-keywords/clever-seo-keywords.php', 'clever_seo_keywords_initial_page');
-	}
+add_action("init", "clever_seo_keywords_start_parsing_keywords_site");
+function clever_seo_keywords_start_parsing_keywords_site() {
+  ob_start();
+}
+add_action("init", "clever_seo_keywords_start_parsing_description_site");
+function clever_seo_keywords_start_parsing_description_site() {
+  ob_start();
 }
 
-function clever_seo_keywords_initial_page() {
-	if (are_clever_seo_keywords_dependencies_installed()) {
-		?>
-	  <h2>Clever SEO Keywords</h2>
-	  <p>Make sure that you have the following line within the head tag of your header.php template file:</p>
-	  <p>
-	  	<textarea cols="100"><?php echo("<meta name=\"keywords\" content=\"<?php if (function_exists('print_clever_seo_keywords')) {print_clever_seo_keywords();} ?>\" />"); ?></textarea>
-	  </p>
-	  <p>Then go to each page and select the keywords you want in the Clever SEO Keyword list.</p>
-	  <?php
-	  tom_add_social_share_links("http://wordpress.org/extend/plugins/clever-seo-keywords/");
-	}
+add_action("wp_footer", "clever_seo_keywords_end_parsing_keywords_site");
+function clever_seo_keywords_end_parsing_keywords_site() {
+  $content = ob_get_contents();
+  ob_end_clean();
+  $postmeta_row = tom_get_row("postmeta", "*", "
+        meta_key = '_clever_seo_keywords_words' AND 
+        post_id =".get_The_ID());
+  $html = str_get_html($content);
+  if ($html->find("meta[name=keywords]", 0)) {
+    $temp = $html->find("meta[name=keywords]", 0)->getAttribute('content');
+    if ($temp != "" && !preg_match("/,|, $/", $temp)) {
+      $temp .= ", ";
+    }
+    $html->find("meta[name=keywords]", 0)->setAttribute('content', $temp.$postmeta_row->meta_value);
+  } else {
+    $e = $html->find("head", 0);
+    $e->outertext = $e->makeup().$e->innertext."<meta name='keywords' content='".$postmeta_row->meta_value."' />".'</head>';
+  }
+  echo $html;
 }
+
+add_action("wp_footer", "clever_seo_keywords_end_parsing_description_site");
+function clever_seo_keywords_end_parsing_description_site() {
+  $content = ob_get_contents();
+  ob_end_clean();
+  $postmeta_row = tom_get_row("postmeta", "*", "
+        meta_key = '_clever_seo_keywords_words' AND 
+        post_id =".get_The_ID());
+  $html = str_get_html($content);
+  if ($html->find("meta[name=description]", 0)) {
+    $temp = $html->find("meta[name=description]", 0)->getAttribute('content');
+    if (!preg_match("/\.|\. $/", $temp)) {
+      $temp .= ". ";
+    }
+    $html->find("meta[name=description]", 0)->setAttribute('content', $temp." We have information about: ".$postmeta_row->meta_value);
+  } else {
+    $e = $html->find("head", 0);
+    $e->outertext = $e->makeup().$e->innertext."<meta name='description' content='We have information about: ".$postmeta_row->meta_value.".' />".'</head>';
+  }
+  echo $html;
+}
+
 
 add_action('admin_enqueue_scripts', 'clever_seo_keywords_admin_theme_style');
 function clever_seo_keywords_admin_theme_style() {

@@ -1,10 +1,10 @@
 === Clever SEO Keywords ===
 Contributors: MMDeveloper
 Donate link: 
-Tags: seo, plugin, keyword, keywords, meta, metadata
+Tags: seo, plugin, keyword, keywords, meta, metadata, description
 Requires at least: 3.3
 Tested up to: 3.6
-Stable tag: 3.0
+Stable tag: 4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Auto create keywords based on your headings.
 
 == Description ==
 
-A wordpress plugin that allows you to auto create keywords based on the headings within your pages.
+A wordpress plugin that allows you to auto create metadata keywords/description based on the headings within your pages.
 
 This plugin uses Simple Html DOM, for info go to http://sourceforge.net/projects/simplehtmldom/
 
@@ -32,6 +32,12 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 
 == Changelog ==
+
+= 4.0 =
+
+* If you have upgraded from a previous version, please remove the clever keyword code from your template (The one that looks like: <meta name="keywords" content="<?php if (function_exists('print_clever_seo_keywords')) {print_clever_seo_keywords();} ?>" />). This version doesn't need it. New feature - this plugin now creates/modifies your page's description metadata.
+
+* Even if you have an existing description or keywords metadata, it will append to it. This is great if you use another plugin that displays keywords or description.
 
 = 3.0 =
 
@@ -54,6 +60,12 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 * Initial Commit
 
 == Upgrade notice ==
+
+= 4.0 =
+
+* If you have upgraded from a previous version, please remove the clever keyword code from your template (The one that looks like: <meta name="keywords" content="<?php if (function_exists('print_clever_seo_keywords')) {print_clever_seo_keywords();} ?>" />). This version doesn't need it. New feature - this plugin now creates/modifies your page's description metadata.
+
+* Even if you have an existing description or keywords metadata, it will append to it. This is great if you use another plugin that displays keywords or description.
 
 = 3.0 =
 
