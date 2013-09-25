@@ -24,7 +24,7 @@ jQuery(function() {
 			current_keywords = jQuery.grep(current_keywords,function(n){ return(n) });
 		}
 
-		jQuery("#clever_keywords_new_field").val(current_keywords.join(","));
+		jQuery("#clever_keywords_new_field").val(current_keywords.join(",").replace(/^,/, ""));
 		
 		return false;
 	});
