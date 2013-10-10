@@ -4,7 +4,7 @@ Donate link:
 Tags: seo, plugin, keyword, keywords, meta, metadata, description
 Requires at least: 3.3
 Tested up to: 3.6
-Stable tag: 4.1
+Stable tag: 4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 
 == Changelog ==
+
+= 4.2 =
+
+* Bug fix, this bug isn't too obvious, no point into trying to display keywords on a page that doesn't exist.
 
 = 4.1 =
 
@@ -64,6 +68,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 * Initial Commit
 
 == Upgrade notice ==
+
+= 4.2 =
+
+* Bug fix, this bug isn't too obvious, no point into trying to display keywords on a page that doesn't exist.
 
 = 4.1 =
 

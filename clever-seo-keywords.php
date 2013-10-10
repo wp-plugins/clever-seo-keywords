@@ -18,7 +18,7 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 4) Activate the plugin.
 
-Version: 4.1
+Version: 4.2
 License: GPL2
 */
 
@@ -78,57 +78,66 @@ function register_clever_seo_keywords_install_dependency_settings() {
 
 add_action("init", "clever_seo_keywords_start_parsing_keywords_site");
 function clever_seo_keywords_start_parsing_keywords_site() {
-  ob_start();
+  if (get_The_ID() != "") {
+    ob_start();
+  }
 }
 add_action("init", "clever_seo_keywords_start_parsing_description_site");
 function clever_seo_keywords_start_parsing_description_site() {
-  ob_start();
+  if (get_The_ID() != "") {
+    ob_start();
+  }
 }
 
 add_action("wp_footer", "clever_seo_keywords_end_parsing_keywords_site");
 function clever_seo_keywords_end_parsing_keywords_site() {
-  $content = ob_get_contents();
-  ob_end_clean();
-  $postmeta_row = tom_get_row("postmeta", "*", "
-        meta_key = '_clever_seo_keywords_words' AND 
-        post_id =".get_The_ID());
-  $html = str_get_html($content);
-  if ($postmeta_row->meta_value != "") {
-    if ($html->find("meta[name=keywords]", 0)) {
-      $temp = $html->find("meta[name=keywords]", 0)->getAttribute("content");
-      if ($temp != "" && !preg_match("/,|, $/", $temp)) {
-        $temp .= ", ";
+  if (get_The_ID() != "") {
+    $content = ob_get_contents();
+    ob_end_clean();
+  
+    $postmeta_row = tom_get_row("postmeta", "*", "
+          meta_key = '_clever_seo_keywords_words' AND 
+          post_id =".get_The_ID());
+    $html = str_get_html($content);
+    if ($postmeta_row->meta_value != "") {
+      if ($html->find("meta[name=keywords]", 0)) {
+        $temp = $html->find("meta[name=keywords]", 0)->getAttribute("content");
+        if ($temp != "" && !preg_match("/,|, $/", $temp)) {
+          $temp .= ", ";
+        }
+        $html->find("meta[name=keywords]", 0)->setAttribute("content", $temp.$postmeta_row->meta_value);
+      } else {
+        $e = $html->find("head", 0);
+        $e->outertext = $e->makeup().$e->innertext."<meta name=\"keywords\" content=\"".$postmeta_row->meta_value."\" />";
       }
-      $html->find("meta[name=keywords]", 0)->setAttribute("content", $temp.$postmeta_row->meta_value);
-    } else {
-      $e = $html->find("head", 0);
-      $e->outertext = $e->makeup().$e->innertext."<meta name=\"keywords\" content=\"".$postmeta_row->meta_value."\" />";
     }
+    echo $html;
   }
-  echo $html;
 }
 
 add_action("wp_footer", "clever_seo_keywords_end_parsing_description_site");
 function clever_seo_keywords_end_parsing_description_site() {
-  $content = ob_get_contents();
-  ob_end_clean();
-  $postmeta_row = tom_get_row("postmeta", "*", "
-        meta_key = '_clever_seo_keywords_words' AND 
-        post_id =".get_The_ID());
-  $html = str_get_html($content);
-  if ($postmeta_row->meta_value != "") {
-    if ($html->find("meta[name=description]", 0)) {
-      $temp = $html->find("meta[name=description]", 0)->getAttribute("content");
-      if (!preg_match("/\.|\. $/", $temp)) {
-        $temp .= ". ";
+  if (get_The_ID() != "") {
+    $content = ob_get_contents();
+    ob_end_clean();
+    $postmeta_row = tom_get_row("postmeta", "*", "
+          meta_key = '_clever_seo_keywords_words' AND 
+          post_id =".get_The_ID());
+    $html = str_get_html($content);
+    if ($postmeta_row->meta_value != "") {
+      if ($html->find("meta[name=description]", 0)) {
+        $temp = $html->find("meta[name=description]", 0)->getAttribute("content");
+        if (!preg_match("/\.|\. $/", $temp)) {
+          $temp .= ". ";
+        }
+        $html->find("meta[name=description]", 0)->setAttribute("content", $temp." Keywords: ".$postmeta_row->meta_value);
+      } else {
+        $e = $html->find("head", 0);
+        $e->outertext = $e->makeup().$e->innertext."<meta name=\"description\" content=\"Keywords: ".$postmeta_row->meta_value.".\" />";
       }
-      $html->find("meta[name=description]", 0)->setAttribute("content", $temp." Keywords: ".$postmeta_row->meta_value);
-    } else {
-      $e = $html->find("head", 0);
-      $e->outertext = $e->makeup().$e->innertext."<meta name=\"description\" content=\"Keywords: ".$postmeta_row->meta_value.".\" />";
     }
+    echo $html;
   }
-  echo $html;
 }
 
 
@@ -176,10 +185,12 @@ function update_the_clever_seo_keywords($my_post) {
 
 function print_clever_seo_keywords() {
 	if (are_clever_seo_keywords_dependencies_installed()) {
-		$postmeta_row = tom_get_row("postmeta", "*", "
-		  	meta_key = '_clever_seo_keywords_words' AND 
-		  	post_id =".get_The_ID());
-		echo($postmeta_row->meta_value);
+    if (get_The_ID() != "") {
+      $postmeta_row = tom_get_row("postmeta", "*", "
+          meta_key = '_clever_seo_keywords_words' AND 
+          post_id =".get_The_ID());
+      echo($postmeta_row->meta_value);
+    }
 	}
 }
 
