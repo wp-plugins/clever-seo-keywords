@@ -4,7 +4,7 @@ Donate link:
 Tags: seo, plugin, keyword, keywords, meta, metadata, description
 Requires at least: 3.3
 Tested up to: 3.6
-Stable tag: 4.3
+Stable tag: 4.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 
 == Changelog ==
+
+= 4.4 =
+
+* Noticed bugs with projects using sessions. So I've cleaned that up. 
 
 = 4.3 =
 
@@ -72,6 +76,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 * Initial Commit
 
 == Upgrade notice ==
+
+= 4.4 =
+
+* Noticed bugs with projects using sessions. So I've cleaned that up. 
 
 = 4.3 =
 
