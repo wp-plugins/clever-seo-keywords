@@ -4,7 +4,7 @@ Donate link:
 Tags: seo, plugin, keyword, keywords, meta, metadata, description
 Requires at least: 3.3
 Tested up to: 3.6
-Stable tag: 4.4
+Stable tag: 4.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 
 == Changelog ==
+
+= 4.5 =
+
+* Able to extract keywords from more html tags on the page. Now you can extract keywords from li, strong, em, th, span, dt, dd and a tags.
 
 = 4.4 =
 
@@ -76,6 +80,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 * Initial Commit
 
 == Upgrade notice ==
+
+= 4.5 =
+
+* Able to extract keywords from more html tags on the page. Now you can extract keywords from li, strong, em, th, span, dt, dd and a tags.
 
 = 4.4 =
 

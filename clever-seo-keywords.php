@@ -18,7 +18,7 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 4) Activate the plugin.
 
-Version: 4.4
+Version: 4.5
 License: GPL2
 */
 
@@ -150,7 +150,7 @@ function update_the_clever_seo_keywords($my_post) {
 
 			if ($html = @file_get_html(get_permalink($my_post->ID))) {
 				$keywords_list = array();
-				foreach($html->find("h1,h2,h3,h4,h5,h6,h7,h8,h9,h1 a,h2 a,h3 a,h4 a,h5 a,h6 a,h7 a,h8 a,h9 a") as $e) {
+				foreach($html->find("h1,h2,h3,h4,h5,h6,h7,h8,h9,a,dt,dd,li,strong,em,th,span") as $e) {
 					if (strlen($e->outertext) >= 2) {
 				    $keywords_list = array_merge($keywords_list, preg_split("/(,|-|:| )/", trim(preg_replace("/".$ignore_word_regex." /", "", strip_tags($e->outertext)))), (array)preg_split("/(,|-|:)/", trim(str_replace(">", "", strip_tags($e->outertext)))));
 					}
