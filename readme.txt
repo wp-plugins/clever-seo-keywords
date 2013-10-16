@@ -4,7 +4,7 @@ Donate link:
 Tags: seo, plugin, keyword, keywords, meta, metadata, description
 Requires at least: 3.3
 Tested up to: 3.6
-Stable tag: 4.5
+Stable tag: 4.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 
 == Changelog ==
+
+= 4.5.1 =
+
+* I've noticed in older templates that the post id is empty. Clever Keywords needs the post id so that it can accurately add the relavent description and keywords to the page. Since it can't always do this, now we find the post id by slug.
 
 = 4.5 =
 
@@ -80,6 +84,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 * Initial Commit
 
 == Upgrade notice ==
+
+= 4.5.1 =
+
+* I've noticed in older templates that the post id is empty. Clever Keywords needs the post id so that it can accurately add the relavent description and keywords to the page. Since it can't always do this, now we find the post id by slug.
 
 = 4.5 =
 

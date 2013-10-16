@@ -18,7 +18,7 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 4) Activate the plugin.
 
-Version: 4.5
+Version: 4.5.1
 License: GPL2
 */
 
@@ -76,19 +76,36 @@ function register_clever_seo_keywords_install_dependency_settings() {
   }
 }
 
+function clever_seo_keywords_get_ID_by_slug($page_slug) {
+  $page_slug = preg_replace("/\?(.+)*$/", "", $page_slug);
+  if ($page_slug == "/") {
+    return get_option("page_on_front");
+  }
+  $page = get_page_by_path($page_slug);
+  if ($page) {
+      return $page->ID;
+  } else {
+      return null;
+  }
+}
+
 add_action("init", "clever_seo_keywords_start_parsing_keywords_site");
 function clever_seo_keywords_start_parsing_keywords_site() {
   if (!isset($_SESSION)) {
     session_start();
   }
-  if (get_The_ID() != "") {
+  $slug_to_get = str_replace(get_option("siteurl"), "", tom_get_current_url());
+  $cpostid = clever_seo_keywords_get_ID_by_slug($slug_to_get);
+  if ($cpostid != null) {
     ob_start();
   }
 }
 
 add_action("wp_footer", "clever_seo_keywords_end_parsing_keywords_site");
 function clever_seo_keywords_end_parsing_keywords_site() {
-  if (get_The_ID() != "") {
+  $slug_to_get = str_replace(get_option("siteurl"), "", tom_get_current_url());
+  $cpostid = clever_seo_keywords_get_ID_by_slug($slug_to_get);
+  if ($cpostid != null) {
     $content = ob_get_contents();
     ob_end_clean();
     $keywords_content = "";
@@ -96,7 +113,7 @@ function clever_seo_keywords_end_parsing_keywords_site() {
     $html = $content;
     if ($postmeta_row = tom_get_row("postmeta", "*", "
           meta_key = '_clever_seo_keywords_words' AND 
-          post_id =".get_The_ID())) {
+          post_id =".$cpostid)) {
       $html = str_get_html($content);
       if ($html != "") {
         if ($postmeta_row->meta_value != "") {
@@ -178,10 +195,12 @@ function update_the_clever_seo_keywords($my_post) {
 
 function print_clever_seo_keywords() {
 	if (are_clever_seo_keywords_dependencies_installed()) {
-    if (get_The_ID() != "") {
+    $slug_to_get = str_replace(get_option("siteurl"), "", tom_get_current_url());
+    $cpostid = clever_seo_keywords_get_ID_by_slug($slug_to_get);
+    if ($cpostid != "") {
       if ($postmeta_row = tom_get_row("postmeta", "*", "
           meta_key = '_clever_seo_keywords_words' AND 
-          post_id =".get_The_ID())) {
+          post_id =".$cpostid)) {
         echo($postmeta_row->meta_value);
       }
     }
