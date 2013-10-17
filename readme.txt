@@ -4,15 +4,15 @@ Donate link:
 Tags: seo, plugin, keyword, keywords, meta, metadata, description
 Requires at least: 3.3
 Tested up to: 3.6
-Stable tag: 4.5.1
+Stable tag: 4.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Auto create keywords based on your headings.
+Easily create keywords, descriptions and headings based on the content of your page.
 
 == Description ==
 
-A wordpress plugin that allows you to auto create metadata keywords/description based on the headings within your pages.
+A wordpress plugin that allows you to create metadata keywords/description based on the headings within your pages, which helps boost your overall SEO score. You can also boost your SEO score by adding hidden generated headings with your keywords as well.
 
 This plugin uses Simple Html DOM, for info go to http://sourceforge.net/projects/simplehtmldom/
 
@@ -32,6 +32,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 
 == Changelog ==
+
+= 4.6 =
+
+* Added the ability to add dynamic hidden headings which contain the page's keywords to a widget. This basically boosts your SEO score and doesn't affect how the site looks at all.
 
 = 4.5.1 =
 
@@ -84,6 +88,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 * Initial Commit
 
 == Upgrade notice ==
+
+= 4.6 =
+
+* Added the ability to add dynamic hidden headings which contain the page's keywords to a widget. This basically boosts your SEO score and doesn't affect how the site looks at all.
 
 = 4.5.1 =
 

@@ -18,7 +18,7 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 4) Activate the plugin.
 
-Version: 4.5.1
+Version: 4.6
 License: GPL2
 */
 
@@ -149,6 +149,78 @@ function clever_seo_keywords_end_parsing_keywords_site() {
 
     echo $html;
   }
+}
+
+add_action( 'widgets_init', 'clever_seo_keywords_register_form_widget' );
+
+/**
+ * Adds CleverKeywordsFormWidget widget.
+ */
+class CleverKeyWordsFormWidget extends WP_Widget {
+
+  /**
+   * Register widget with WordPress.
+   */
+  function __construct() {
+    parent::__construct(
+      'clever_seo_keywords_widget', // Base ID
+      __('Clever SEO Keywords', 'clever_seo_keywords_widget'), // Name
+      array( 'description' => __( "A widget that allows you to add an invisible header containing the page's keywords that will boost your SEO score.', 'clever_seo_keywords_widget" ), ) // Args
+    );
+  }
+
+  /**
+   * Front-end display of widget.
+   *
+   * @see WP_Widget::widget()
+   *
+   * @param array $args     Widget arguments.
+   * @param array $instance Saved values from database.
+   */
+  public function widget( $args, $instance ) {
+    $slug_to_get = str_replace(get_option("siteurl"), "", tom_get_current_url());
+    $cpostid = clever_seo_keywords_get_ID_by_slug($slug_to_get);
+    $seo_content = "";
+    if ($cpostid != null) {
+      if ($postmeta_row = tom_get_row("postmeta", "*", "
+            meta_key = '_clever_seo_keywords_words' AND 
+            post_id =".$cpostid)) {
+        echo "<div style='display: none;'><h2>".get_option("blogname")." - ".get_the_title()." contains information about: </h2>";
+        foreach(explode(",", $postmeta_row->meta_value) as $heading) {
+          echo "<h3>".$heading."</h3>";
+        }
+        echo "<p>If this is not what your looking for, please <a href='".tom_get_current_url()."#'>scroll back to the top</a> and use the navigation links to find your way.</p></div>";
+      }
+    }
+  }
+
+  /**
+   * Back-end widget form.
+   *
+   * @see WP_Widget::form()
+   *
+   * @param array $instance Previously saved values from database.
+   */
+  public function form( $instance ) {
+  }
+
+  /**
+   * Sanitize widget form values as they are saved.
+   *
+   * @see WP_Widget::update()
+   *
+   * @param array $new_instance Values just sent to be saved.
+   * @param array $old_instance Previously saved values from database.
+   *
+   * @return array Updated safe values to be saved.
+   */
+  public function update( $new_instance, $old_instance ) {
+  }
+
+} // class Foo_Widget
+
+function clever_seo_keywords_register_form_widget() {
+  register_widget( 'CleverKeywordsFormWidget' );
 }
 
 add_action('admin_enqueue_scripts', 'clever_seo_keywords_admin_theme_style');
