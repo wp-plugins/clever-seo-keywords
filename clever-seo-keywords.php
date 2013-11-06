@@ -430,12 +430,12 @@ function clever_keywords_save_postdata( $post_id ) {
     // Then create category of current page title.
     $sub_id = wp_create_category(get_the_title($post_ID), $id);
 
-    wp_set_post_categories($post_ID, array($id));
-    wp_set_post_categories($post_ID, array($sub_id));
+    // wp_set_post_categories($post_ID, array($id));
+    // wp_set_post_categories($post_ID, array($sub_id));
   } else {
     // Then create category of current page title.
     $id = wp_create_category(get_the_title($post_ID));
-    wp_set_post_categories($post_ID, array($id));
+    // wp_set_post_categories($post_ID, array($id));
   }
 
   // Do something with $mydata 
