@@ -428,10 +428,14 @@ function clever_keywords_save_postdata( $post_id ) {
     // Page has parent, so create parent category first.
     $id = wp_create_category(get_the_title($post->post_parent));
     // Then create category of current page title.
-    wp_create_category(get_the_title($post_ID), $id);
+    $sub_id = wp_create_category(get_the_title($post_ID), $id);
+
+    wp_set_post_categories($post_ID, array($id));
+    wp_set_post_categories($post_ID, array($sub_id));
   } else {
     // Then create category of current page title.
-    wp_create_category(get_the_title($post_ID));
+    $id = wp_create_category(get_the_title($post_ID));
+    wp_set_post_categories($post_ID, array($id));
   }
 
   // Do something with $mydata 
