@@ -95,63 +95,67 @@ function clever_seo_keywords_get_ID_by_slug($page_slug) {
 
 add_action("init", "clever_seo_keywords_start_parsing_keywords_site");
 function clever_seo_keywords_start_parsing_keywords_site() {
-  if (!isset($_SESSION)) {
-    session_start();
-  }
-  $slug_to_get = str_replace(get_option("siteurl"), "", tom_get_current_url());
-  $cpostid = clever_seo_keywords_get_ID_by_slug($slug_to_get);
-  if ($cpostid != null) {
-    ob_start();
+  if (function_exists("tom_get_current_url")) {
+    if (!isset($_SESSION)) {
+      session_start();
+    }
+    $slug_to_get = str_replace(get_option("siteurl"), "", tom_get_current_url());
+    $cpostid = clever_seo_keywords_get_ID_by_slug($slug_to_get);
+    if ($cpostid != null) {
+      ob_start();
+    }
   }
 }
 
 add_action("wp_footer", "clever_seo_keywords_end_parsing_keywords_site");
 function clever_seo_keywords_end_parsing_keywords_site() {
-  $slug_to_get = str_replace(get_option("siteurl"), "", tom_get_current_url());
-  $cpostid = clever_seo_keywords_get_ID_by_slug($slug_to_get);
-  if ($cpostid != null) {
-    $content = ob_get_contents();
-    ob_end_clean();
-    $keywords_content = "";
-    $description_content = "";
-    $html = $content;
-    if ($postmeta_row = tom_get_row("postmeta", "*", "
-          meta_key = '_clever_seo_keywords_words' AND 
-          post_id =".$cpostid)) {
-      $html = str_get_html($content);
-      if ($html != "") {
-        if ($postmeta_row->meta_value != "") {
-          if ($html->find("meta[name=keywords]", 0)) {
-            $temp = $html->find("meta[name=keywords]", 0)->getAttribute("content");
-            if ($temp != "" && !preg_match("/,|, $/", $temp)) {
-              $temp .= ", ";
-            }
-            $html->find("meta[name=keywords]", 0)->setAttribute("content", $temp.$postmeta_row->meta_value);
-          } else {
-            $keywords_content = "<meta name=\"keywords\" content=\"".$postmeta_row->meta_value."\" />";
-          }
-
+  if (function_exists("tom_get_current_url")) {
+    $slug_to_get = str_replace(get_option("siteurl"), "", tom_get_current_url());
+    $cpostid = clever_seo_keywords_get_ID_by_slug($slug_to_get);
+    if ($cpostid != null) {
+      $content = ob_get_contents();
+      ob_end_clean();
+      $keywords_content = "";
+      $description_content = "";
+      $html = $content;
+      if ($postmeta_row = tom_get_row("postmeta", "*", "
+            meta_key = '_clever_seo_keywords_words' AND 
+            post_id =".$cpostid)) {
+        $html = str_get_html($content);
+        if ($html != "") {
           if ($postmeta_row->meta_value != "") {
-            if ($html->find("meta[name=description]", 0)) {
-              $temp = $html->find("meta[name=description]", 0)->getAttribute("content");
-              if (!preg_match("/\.|\. $/", $temp)) {
-                $temp .= ". ";
+            if ($html->find("meta[name=keywords]", 0)) {
+              $temp = $html->find("meta[name=keywords]", 0)->getAttribute("content");
+              if ($temp != "" && !preg_match("/,|, $/", $temp)) {
+                $temp .= ", ";
               }
-              $html->find("meta[name=description]", 0)->setAttribute("content", $temp." Keywords: ".$postmeta_row->meta_value);
+              $html->find("meta[name=keywords]", 0)->setAttribute("content", $temp.$postmeta_row->meta_value);
             } else {
-              $description_content = "<meta name=\"description\" content=\"Keywords: ".$postmeta_row->meta_value.".\" />";
+              $keywords_content = "<meta name=\"keywords\" content=\"".$postmeta_row->meta_value."\" />";
+            }
+
+            if ($postmeta_row->meta_value != "") {
+              if ($html->find("meta[name=description]", 0)) {
+                $temp = $html->find("meta[name=description]", 0)->getAttribute("content");
+                if (!preg_match("/\.|\. $/", $temp)) {
+                  $temp .= ". ";
+                }
+                $html->find("meta[name=description]", 0)->setAttribute("content", $temp." Keywords: ".$postmeta_row->meta_value);
+              } else {
+                $description_content = "<meta name=\"description\" content=\"Keywords: ".$postmeta_row->meta_value.".\" />";
+              }
             }
           }
         }
+
+        if ($keywords_content != "" || $description_content != "") {
+          $e = $html->find("head", 0);
+          $e->outertext = $e->makeup().$e->innertext.$keywords_content.$description_content;
+        }
       }
 
-      if ($keywords_content != "" || $description_content != "") {
-        $e = $html->find("head", 0);
-        $e->outertext = $e->makeup().$e->innertext.$keywords_content.$description_content;
-      }
+      echo $html;
     }
-
-    echo $html;
   }
 }
 
@@ -182,18 +186,20 @@ class CleverKeyWordsFormWidget extends WP_Widget {
    * @param array $instance Saved values from database.
    */
   public function widget( $args, $instance ) {
-    $slug_to_get = str_replace(get_option("siteurl"), "", tom_get_current_url());
-    $cpostid = clever_seo_keywords_get_ID_by_slug($slug_to_get);
-    $seo_content = "";
-    if ($cpostid != null) {
-      if ($postmeta_row = tom_get_row("postmeta", "*", "
-            meta_key = '_clever_seo_keywords_words' AND 
-            post_id =".$cpostid)) {
-        echo "<div style='display: none;'><h2>".get_option("blogname")." - ".get_the_title()." contains information about: </h2>";
-        foreach(explode(",", $postmeta_row->meta_value) as $heading) {
-          echo "<h3>".$heading."</h3>";
+    if (function_exists("tom_get_current_url")) {
+      $slug_to_get = str_replace(get_option("siteurl"), "", tom_get_current_url());
+      $cpostid = clever_seo_keywords_get_ID_by_slug($slug_to_get);
+      $seo_content = "";
+      if ($cpostid != null) {
+        if ($postmeta_row = tom_get_row("postmeta", "*", "
+              meta_key = '_clever_seo_keywords_words' AND 
+              post_id =".$cpostid)) {
+          echo "<div style='display: none;'><h2>".get_option("blogname")." - ".get_the_title()." contains information about: </h2>";
+          foreach(explode(",", $postmeta_row->meta_value) as $heading) {
+            echo "<h3>".$heading."</h3>";
+          }
+          echo "<p>If this is not what your looking for, please <a href='".tom_get_current_url()."#'>scroll back to the top</a> and use the navigation links to find your way.</p></div>";
         }
-        echo "<p>If this is not what your looking for, please <a href='".tom_get_current_url()."#'>scroll back to the top</a> and use the navigation links to find your way.</p></div>";
       }
     }
   }
@@ -229,26 +235,26 @@ function clever_seo_keywords_register_form_widget() {
 
 add_action('admin_enqueue_scripts', 'clever_seo_keywords_admin_theme_style');
 function clever_seo_keywords_admin_theme_style() {
-	if (are_clever_seo_keywords_dependencies_installed()) {
-	  wp_enqueue_style('clever_seo_keywords', plugins_url('/css/style.css', __FILE__));
-	  wp_enqueue_script('clever_seo_keywords', plugins_url('/js/application.js', __FILE__));
-	}
+  if (are_clever_seo_keywords_dependencies_installed()) {
+    wp_enqueue_style('clever_seo_keywords', plugins_url('/css/style.css', __FILE__));
+    wp_enqueue_script('clever_seo_keywords', plugins_url('/js/application.js', __FILE__));
+  }
 }
 
 function update_the_clever_seo_keywords($my_post) {
-	if (are_clever_seo_keywords_dependencies_installed()) {
-		if ($my_post != null) {
+  if (are_clever_seo_keywords_dependencies_installed()) {
+    if ($my_post != null) {
 
       // Get content on the actual page.
-			if ($html = @file_get_html(get_permalink($my_post->ID))) {
-				$keywords_list = array();
+      if ($html = @file_get_html(get_permalink($my_post->ID))) {
+        $keywords_list = array();
         // Travse the pages DOM and look at all readings, dt, dd, anchors, etc.
-				foreach($html->find("h1,h2,h3,h4,h5,h6,h7,h8,h9,a,dt,dd,li,strong,em,th,span") as $e) {
-					if (strlen($e->outertext) >= 2) {
+        foreach($html->find("h1,h2,h3,h4,h5,h6,h7,h8,h9,a,dt,dd,li,strong,em,th,span") as $e) {
+          if (strlen($e->outertext) >= 2) {
             // Create first keyword list.
             $keywords_list = get_keyword_list_from_text($keywords_list, $e->outertext);
-					}
-			  }
+          }
+        }
 
         // Create keyword list from blog name.
         $keywords_list = get_keyword_list_from_text($keywords_list, get_option("blogname"));
@@ -256,21 +262,21 @@ function update_the_clever_seo_keywords($my_post) {
         // Create keyword list from blog description.
         $keywords_list = get_keyword_list_from_text($keywords_list, get_option("blogdescription"));
 
-				$index = 0;
-				foreach ($keywords_list as $value) {
+        $index = 0;
+        foreach ($keywords_list as $value) {
           // Only accept keywords between 2 and 20 characters long.
-					if (strlen($keywords_list[$index]) > 2 && strlen($keywords_list[$index]) < 20) {
-						$keywords_list[$index] = scrub_clever_seo_keyword(tom_titlize_str($keywords_list[$index]));					
-					} else {
-						$keywords_list[$index] = null;
-					}	
-					$index++;
-				}
-				$keywords_list = array_unique(array_filter($keywords_list, 'strlen' ));
-				return implode(",", $keywords_list);
-			}
-		}
-	}
+          if (strlen($keywords_list[$index]) > 2 && strlen($keywords_list[$index]) < 20) {
+            $keywords_list[$index] = scrub_clever_seo_keyword(tom_titlize_str($keywords_list[$index]));         
+          } else {
+            $keywords_list[$index] = null;
+          } 
+          $index++;
+        }
+        $keywords_list = array_unique(array_filter($keywords_list, 'strlen' ));
+        return implode(",", $keywords_list);
+      }
+    }
+  }
 }
 
 function get_keyword_list_from_text($keywords_list, $text) {
@@ -280,7 +286,7 @@ function get_keyword_list_from_text($keywords_list, $text) {
 
 
 function print_clever_seo_keywords() {
-	if (are_clever_seo_keywords_dependencies_installed()) {
+  if (are_clever_seo_keywords_dependencies_installed()) {
     $slug_to_get = str_replace(get_option("siteurl"), "", tom_get_current_url());
     $cpostid = clever_seo_keywords_get_ID_by_slug($slug_to_get);
     if ($cpostid != "") {
@@ -290,11 +296,11 @@ function print_clever_seo_keywords() {
         echo($postmeta_row->meta_value);
       }
     }
-	}
+  }
 }
 
 function scrub_clever_seo_keyword($keyword) {
-	if (are_clever_seo_keywords_dependencies_installed()) {
+  if (are_clever_seo_keywords_dependencies_installed()) {
 
     // If keyword is one of the following, ignore keyword.
     if (preg_match("/^A$|^I$|^About$|^As$|^Of$|^Our$|^The$|^This$|^That$|^Is$|^Are$|^With$|^And$|^All$|^For$|^Your$|^Skip$|^To$|^Content$/i", $keyword)) {
@@ -327,7 +333,7 @@ function scrub_clever_seo_keyword($keyword) {
       }
       return trim($scubbed_keyword);
     }
-	}
+  }
 }
 
 /* Define the custom box */
@@ -369,24 +375,24 @@ function clever_keywords_inner_custom_box( $post ) {
 
   ?>
   <div id="clever_keywords_controls">
-  	<p>Select the keywords you want by clicking on them and then save the page/post. The green keywords are currently being used, while the grey ones are not. Don't be a smarty bum and select all, that approach will harm your SEO score, please take your time per page and select the words that best represent each page.</p>
-	  <ul id="possible_clever_keywords">
-	  	<?php
-		  foreach ($possible_keywords as $keyword) {
-		  	?>
-		  	<li><a <?php if (in_array($keyword, $current_keywords)) { echo("class='active'"); } ?> href="#"><?php echo($keyword); ?></a></li>
-		  	<?php
-		  }
-		  ?>
-		</ul>
-		<?php
-	  echo '<input type="hidden" id="clever_keywords_new_field" name="clever_keywords_new_field" value="'.esc_attr($value).'" size="25" />
+    <p>Select the keywords you want by clicking on them and then save the page/post. The green keywords are currently being used, while the grey ones are not. Don't be a smarty bum and select all, that approach will harm your SEO score, please take your time per page and select the words that best represent each page.</p>
+    <ul id="possible_clever_keywords">
+      <?php
+      foreach ($possible_keywords as $keyword) {
+        ?>
+        <li><a <?php if (in_array($keyword, $current_keywords)) { echo("class='active'"); } ?> href="#"><?php echo($keyword); ?></a></li>
+        <?php
+      }
+      ?>
+    </ul>
+    <?php
+    echo '<input type="hidden" id="clever_keywords_new_field" name="clever_keywords_new_field" value="'.esc_attr($value).'" size="25" />
     <p>If you are having any issues deselecting a keyword or any other issue, try and click the reset button.</p>
     <p><input type="button" name="action" value="Reset" id="reset_keywords"/> <input type="button" name="action" value="Save Changes" id="save_keywords" class="button button-primary button-large" /></p>
     ';
-	?>
-	</div>
-	<?php
+  ?>
+  </div>
+  <?php
 }
 
 /* When the post is saved, saves our custom data */
