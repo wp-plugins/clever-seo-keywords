@@ -4,7 +4,7 @@ Donate link:
 Tags: seo, plugin, keyword, keywords, meta, metadata, description
 Requires at least: 3.3
 Tested up to: 3.6
-Stable tag: 4.6
+Stable tag: 5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 
 == Changelog ==
+
+= 5.0 =
+
+* Auto create Wordpress Tags based on keywords and Wordpress Categories based on the page title and parent page title. Removed Simple PHP DOM libary as it is already in latest Tom M8te library.
 
 = 4.6 =
 
@@ -88,6 +92,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 * Initial Commit
 
 == Upgrade notice ==
+
+= 5.0 =
+
+* Auto create Wordpress Tags based on keywords and Wordpress Categories based on the page title and parent page title. Removed Simple PHP DOM libary as it is already in latest Tom M8te library.
 
 = 4.6 =
 

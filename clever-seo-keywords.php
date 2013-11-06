@@ -18,14 +18,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 4) Activate the plugin.
 
-Version: 4.6
+Version: 5.0
 License: GPL2
+
 */
-
-
-if (!class_exists("simple_html_dom_node")) {
- require_once(dirname(__FILE__).'/simple_html_dom.php');
-}
 
 function are_clever_seo_keywords_dependencies_installed() {
   return is_plugin_active("tom-m8te/tom-m8te.php");
@@ -35,6 +31,14 @@ add_action( 'admin_notices', 'clever_seo_keywords_notice_notice' );
 function clever_seo_keywords_notice_notice(){
   $activate_nonce = wp_create_nonce( "activate-clever-seo-keywords-dependencies" );
   $tom_active = is_plugin_active("tom-m8te/tom-m8te.php");
+
+  if (!class_exists("simple_html_dom_node")) {
+    ?>
+    <div class='updated below-h2'><p>Please install/upgrade your Tom M8te plugin. Your Clever SEO Keywords plugin now uses Tom M8te's new library for parsing the HTML code for keywords. Just go to <a href="<?php echo(get_option("siteurl")); ?>/wp-admin/plugins.php">plugins area and upgrade</a>.</p>
+    </div>
+    <?php
+  }
+
   if (!($tom_active)) { ?>
     <div class='updated below-h2'><p>Before you can use Clever SEO Keywords, please install/activate the following plugin:</p>
     <ul>
@@ -235,35 +239,45 @@ function update_the_clever_seo_keywords($my_post) {
 	if (are_clever_seo_keywords_dependencies_installed()) {
 		if ($my_post != null) {
 
-			$ignore_word_regex = "(A|About|As|Of|Our|The|This|Is|Are|With|And|All|&|>|<)";
-
+      // Get content on the actual page.
 			if ($html = @file_get_html(get_permalink($my_post->ID))) {
 				$keywords_list = array();
+        // Travse the pages DOM and look at all readings, dt, dd, anchors, etc.
 				foreach($html->find("h1,h2,h3,h4,h5,h6,h7,h8,h9,a,dt,dd,li,strong,em,th,span") as $e) {
 					if (strlen($e->outertext) >= 2) {
-				    $keywords_list = array_merge($keywords_list, preg_split("/(,|-|:| )/", trim(preg_replace("/".$ignore_word_regex." /", "", strip_tags($e->outertext)))), (array)preg_split("/(,|-|:)/", trim(str_replace(">", "", strip_tags($e->outertext)))));
+            // Create first keyword list.
+            $keywords_list = get_keyword_list_from_text($keywords_list, $e->outertext);
 					}
 			  }
 
-				$keywords_list = array_merge($keywords_list, preg_split("/(,|-|:|\|| )/", trim(preg_replace("/".$ignore_word_regex." /", "", strip_tags(get_option("blogname"))))), (array)preg_split("/(,|-|:|\|)/", trim(str_replace(">", "", strip_tags(get_option("blogname"))))));
+        // Create keyword list from blog name.
+        $keywords_list = get_keyword_list_from_text($keywords_list, get_option("blogname"));
 
-				$keywords_list = array_merge($keywords_list, preg_split("/(,|-|:|\|| )/", trim(preg_replace("/".$ignore_word_regex." /", "", strip_tags(get_option("blogdescription"))))), (array)preg_split("/(,|-|:|\|)/", trim(str_replace(">", "", strip_tags(get_option("blogdescription"))))));
+        // Create keyword list from blog description.
+        $keywords_list = get_keyword_list_from_text($keywords_list, get_option("blogdescription"));
 
 				$index = 0;
 				foreach ($keywords_list as $value) {
-					if (strlen($keywords_list[$index]) > 2) {
+          // Only accept keywords between 2 and 20 characters long.
+					if (strlen($keywords_list[$index]) > 2 && strlen($keywords_list[$index]) < 20) {
 						$keywords_list[$index] = scrub_clever_seo_keyword(tom_titlize_str($keywords_list[$index]));					
 					} else {
 						$keywords_list[$index] = null;
 					}	
 					$index++;
 				}
-				$keywords_list = array_unique(array_filter( $keywords_list, 'strlen' ));
+				$keywords_list = array_unique(array_filter($keywords_list, 'strlen' ));
 				return implode(",", $keywords_list);
 			}
 		}
 	}
 }
+
+function get_keyword_list_from_text($keywords_list, $text) {
+  $ignore_word_regex = "(&|>|<)";
+  return array_merge($keywords_list, preg_split("/(,|-|:| )/", trim(preg_replace("/".$ignore_word_regex."/", "", trim(str_replace(">", "", strip_tags($text)))))), (array)preg_split("/(,|-|:)/", trim(str_replace(">", "", strip_tags($text)))));
+}
+
 
 function print_clever_seo_keywords() {
 	if (are_clever_seo_keywords_dependencies_installed()) {
@@ -281,9 +295,38 @@ function print_clever_seo_keywords() {
 
 function scrub_clever_seo_keyword($keyword) {
 	if (are_clever_seo_keywords_dependencies_installed()) {
-		$keyword = preg_replace("/^( )*|( )*$|&nbsp;|Nbsp;|Amp;|^&amp;$|^&#038;$/", "", $keyword);
-		$keyword = preg_replace("/(&#039;|#039;|#8217;|&#8217;)/", "'", $keyword);
-		return $keyword;
+
+    // If keyword is one of the following, ignore keyword.
+    if (preg_match("/^A$|^I$|^About$|^As$|^Of$|^Our$|^The$|^This$|^That$|^Is$|^Are$|^With$|^And$|^All$|^For$|^Your$|^Skip$|^To$|^Content$/i", $keyword)) {
+      return null;
+    } else {
+      // This keyword may potentially be useful.
+      $keyword = preg_replace("/^( )*|( )*$|&nbsp;|Nbsp;|Amp;|&amp;|&#038;/", "", $keyword);
+      $keyword = preg_replace("/(&#039;|#039;|#8217;|&#8217;)/", "'", $keyword);
+      $scubbed_keyword = "";
+      for($i=0; $i<strlen($keyword);$i++) {
+        // Check to see if next character is a capital.
+        if (preg_match("/[A-Z]/", $keyword{$i})) {
+          if ((($i+1) < strlen($keyword)) && preg_match("/[a-z]/", $keyword{($i+1)})) {
+            $scubbed_keyword .= " "; // If next letter is a Capital letter and one after is lower case, add a space.
+          }
+        }
+
+        // Inspect next character, if its a letter or number or quote, accept. Reject everything else.
+        if (preg_match("/[a-z|A-Z|0-9| |']/i", $keyword{$i})) {
+          $scubbed_keyword .= $keyword{$i};
+        }
+
+        // Check to see if next character is lower case.
+        if (preg_match("/[a-z]/", $keyword{$i})) {
+          if ((($i+1) < strlen($keyword)) && preg_match("/[A-Z]/", $keyword{($i+1)})) {
+            $scubbed_keyword .= " "; // If next letter is a Capital letter and one after is lower case, add a space.
+          }
+        }
+
+      }
+      return trim($scubbed_keyword);
+    }
 	}
 }
 
@@ -326,7 +369,7 @@ function clever_keywords_inner_custom_box( $post ) {
 
   ?>
   <div id="clever_keywords_controls">
-  	<p>Select the keywords you want by clicking on them and then save the page/post. The green keywords are currently being used, while the grey ones are not.</p>
+  	<p>Select the keywords you want by clicking on them and then save the page/post. The green keywords are currently being used, while the grey ones are not. Don't be a smarty bum and select all, that approach will harm your SEO score, please take your time per page and select the words that best represent each page.</p>
 	  <ul id="possible_clever_keywords">
 	  	<?php
 		  foreach ($possible_keywords as $keyword) {
@@ -337,7 +380,10 @@ function clever_keywords_inner_custom_box( $post ) {
 		  ?>
 		</ul>
 		<?php
-	  echo '<input type="hidden" id="clever_keywords_new_field" name="clever_keywords_new_field" value="'.esc_attr($value).'" size="25" />';
+	  echo '<input type="hidden" id="clever_keywords_new_field" name="clever_keywords_new_field" value="'.esc_attr($value).'" size="25" />
+    <p>If you are having any issues deselecting a keyword or any other issue, try and click the reset button.</p>
+    <p><input type="button" name="action" value="Reset" id="reset_keywords"/> <input type="button" name="action" value="Save Changes" id="save_keywords" class="button button-primary button-large" /></p>
+    ';
 	?>
 	</div>
 	<?php
@@ -347,12 +393,8 @@ function clever_keywords_inner_custom_box( $post ) {
 function clever_keywords_save_postdata( $post_id ) {
 
   // First we need to check if the current user is authorised to do this action. 
-  if ( 'page' == $_REQUEST['post_type'] ) {
-    if ( ! current_user_can( 'edit_page', $post_id ) )
-        return;
-  } else {
-    if ( ! current_user_can( 'edit_post', $post_id ) )
-        return;
+  if (!current_user_can( 'edit_post', $post_id)) {
+    return;
   }
 
   // Secondly we need to check if the user intended to change this value.
@@ -366,11 +408,45 @@ function clever_keywords_save_postdata( $post_id ) {
   //sanitize user input
   $mydata = sanitize_text_field( $_POST['clever_keywords_new_field'] );
 
+  // Create Tags for each selected Keyword.
+  $words = explode(",", $mydata);
+  foreach ($words as $word) {
+    wp_set_post_tags( $post_ID, $word, true );
+  }
+  
+  // Create the parent page as a category if page has parent.
+  $post = get_post($post_ID);
+
+  // Check to see if page has parent.
+  if ($post->post_parent) {
+    // Page has parent, so create parent category first.
+    $id = wp_create_category(get_the_title($post->post_parent));
+    // Then create category of current page title.
+    wp_create_category(get_the_title($post_ID), $id);
+  } else {
+    // Then create category of current page title.
+    wp_create_category(get_the_title($post_ID));
+  }
+
   // Do something with $mydata 
   // either using 
   add_post_meta($post_ID, '_clever_seo_keywords_words', $mydata, true) or
     update_post_meta($post_ID, '_clever_seo_keywords_words', $mydata);
   // or a custom table (see Further Reading section below)
+}
+
+// Setup tags for pages. Set keywords as Tags.
+add_action("admin_init", "clever_seo_keywords_register_tags");
+function clever_seo_keywords_register_tags() {
+  register_taxonomy_for_object_type('post_tag', 'page');
+  register_taxonomy_for_object_type('category', 'page');
+}
+
+add_filter('request', 'clever_seo_keywords_expanded_request');  
+function clever_seo_keywords_expanded_request($q) {
+    if (isset($q['tag']) || isset($q['category_name'])) 
+                $q['post_type'] = array('post', 'page');
+    return $q;
 }
 
 ?>

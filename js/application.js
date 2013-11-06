@@ -1,6 +1,14 @@
 jQuery(function() {
 
-	jQuery("#clever_keywords_controls").css("height", parseInt(parseInt(jQuery("#possible_clever_keywords").css("height")) + 50));
+	jQuery("#reset_keywords").click(function() {
+		jQuery("#clever_keywords_new_field").val("");
+		jQuery("#possible_clever_keywords li a").removeClass("active");
+		jQuery("#publish").click();
+	});
+
+	jQuery("#save_keywords").click(function() {
+		jQuery("#publish").click();
+	});
 
 	jQuery("#possible_clever_keywords li a").click(function() {
 		jQuery(this).toggleClass("active");
@@ -18,8 +26,10 @@ jQuery(function() {
 		});
 
 		if (add_word) {
+			// Add the word.
 			current_keywords.push(current_word);
 		} else {
+			// Remove the word.
 			current_keywords[removeIndex] = null;
 			current_keywords = jQuery.grep(current_keywords,function(n){ return(n) });
 		}

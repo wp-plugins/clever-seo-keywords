@@ -1,12 +1,9 @@
-#possible_clever_keywords {
-	float: left;
-}
 #clever_keywords_controls p {
 	margin: 0;
 	padding: 0;
 }
 #possible_clever_keywords li {
-	float: left;
+	display: inline-block;
 	margin: 3px;
 }
 
