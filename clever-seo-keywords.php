@@ -194,10 +194,12 @@ class CleverKeyWordsFormWidget extends WP_Widget {
         if ($postmeta_row = tom_get_row("postmeta", "*", "
               meta_key = '_clever_seo_keywords_words' AND 
               post_id =".$cpostid)) {
-          echo "<div style='display: none;'><h2>".get_option("blogname")." - ".get_the_title()." contains information about: </h2>";
+          echo "<div style='position: absolute; top: -1000em; left: -1000em; z-index: -1000; height:0; max-height: 0;'><h2>".get_option("blogname")." - ".get_the_title()." contains information about: </h2>";
+          echo "<ul>";
           foreach(explode(",", $postmeta_row->meta_value) as $heading) {
-            echo "<h3>".$heading."</h3>";
+            echo "<li><h3>".$heading."</h3></li>";
           }
+          echo "</ul>";
           echo "<p>If this is not what your looking for, please <a href='".tom_get_current_url()."#'>scroll back to the top</a> and use the navigation links to find your way.</p></div>";
         }
       }
