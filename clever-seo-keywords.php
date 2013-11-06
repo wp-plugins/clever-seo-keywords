@@ -331,7 +331,7 @@ function scrub_clever_seo_keyword($keyword) {
         }
 
       }
-      return trim($scubbed_keyword);
+      return trim(preg_replace("/  */", " ", $scubbed_keyword));
     }
   }
 }
