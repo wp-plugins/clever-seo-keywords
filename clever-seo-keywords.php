@@ -6,7 +6,7 @@ Description: A wordpress plugin that allows you to auto create meta keywords and
 
 Installation:
 
-1) Install WordPress 3.6 or higher
+1) Install WordPress 3.7 or higher
 
 2) Download the latest from:
 
@@ -18,7 +18,7 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 4) Activate the plugin.
 
-Version: 5.0
+Version: 5.1
 License: GPL2
 
 */
@@ -237,26 +237,26 @@ function clever_seo_keywords_register_form_widget() {
 
 add_action('admin_enqueue_scripts', 'clever_seo_keywords_admin_theme_style');
 function clever_seo_keywords_admin_theme_style() {
-  if (are_clever_seo_keywords_dependencies_installed()) {
-    wp_enqueue_style('clever_seo_keywords', plugins_url('/css/style.css', __FILE__));
-    wp_enqueue_script('clever_seo_keywords', plugins_url('/js/application.js', __FILE__));
-  }
+	if (are_clever_seo_keywords_dependencies_installed()) {
+	  wp_enqueue_style('clever_seo_keywords', plugins_url('/css/style.css', __FILE__));
+	  wp_enqueue_script('clever_seo_keywords', plugins_url('/js/application.js', __FILE__));
+	}
 }
 
 function update_the_clever_seo_keywords($my_post) {
-  if (are_clever_seo_keywords_dependencies_installed()) {
-    if ($my_post != null) {
+	if (are_clever_seo_keywords_dependencies_installed()) {
+		if ($my_post != null) {
 
       // Get content on the actual page.
-      if ($html = @file_get_html(get_permalink($my_post->ID))) {
-        $keywords_list = array();
+			if ($html = @file_get_html(get_permalink($my_post->ID))) {
+				$keywords_list = array();
         // Travse the pages DOM and look at all readings, dt, dd, anchors, etc.
-        foreach($html->find("h1,h2,h3,h4,h5,h6,h7,h8,h9,a,dt,dd,li,strong,em,th,span") as $e) {
-          if (strlen($e->outertext) >= 2) {
+				foreach($html->find("h1,h2,h3,h4,h5,h6,h7,h8,h9,a,dt,dd,li,strong,em,th,span") as $e) {
+					if (strlen($e->outertext) >= 2) {
             // Create first keyword list.
             $keywords_list = get_keyword_list_from_text($keywords_list, $e->outertext);
-          }
-        }
+					}
+			  }
 
         // Create keyword list from blog name.
         $keywords_list = get_keyword_list_from_text($keywords_list, get_option("blogname"));
@@ -264,21 +264,21 @@ function update_the_clever_seo_keywords($my_post) {
         // Create keyword list from blog description.
         $keywords_list = get_keyword_list_from_text($keywords_list, get_option("blogdescription"));
 
-        $index = 0;
-        foreach ($keywords_list as $value) {
+				$index = 0;
+				foreach ($keywords_list as $value) {
           // Only accept keywords between 2 and 20 characters long.
-          if (strlen($keywords_list[$index]) > 2 && strlen($keywords_list[$index]) < 20) {
-            $keywords_list[$index] = scrub_clever_seo_keyword(tom_titlize_str($keywords_list[$index]));         
-          } else {
-            $keywords_list[$index] = null;
-          } 
-          $index++;
-        }
-        $keywords_list = array_unique(array_filter($keywords_list, 'strlen' ));
-        return implode(",", $keywords_list);
-      }
-    }
-  }
+					if (strlen($keywords_list[$index]) > 2 && strlen($keywords_list[$index]) < 20) {
+						$keywords_list[$index] = scrub_clever_seo_keyword(tom_titlize_str($keywords_list[$index]));					
+					} else {
+						$keywords_list[$index] = null;
+					}	
+					$index++;
+				}
+				$keywords_list = array_unique(array_filter($keywords_list, 'strlen' ));
+				return implode(",", $keywords_list);
+			}
+		}
+	}
 }
 
 function get_keyword_list_from_text($keywords_list, $text) {
@@ -288,7 +288,7 @@ function get_keyword_list_from_text($keywords_list, $text) {
 
 
 function print_clever_seo_keywords() {
-  if (are_clever_seo_keywords_dependencies_installed()) {
+	if (are_clever_seo_keywords_dependencies_installed()) {
     $slug_to_get = str_replace(get_option("siteurl"), "", tom_get_current_url());
     $cpostid = clever_seo_keywords_get_ID_by_slug($slug_to_get);
     if ($cpostid != "") {
@@ -298,11 +298,11 @@ function print_clever_seo_keywords() {
         echo($postmeta_row->meta_value);
       }
     }
-  }
+	}
 }
 
 function scrub_clever_seo_keyword($keyword) {
-  if (are_clever_seo_keywords_dependencies_installed()) {
+	if (are_clever_seo_keywords_dependencies_installed()) {
 
     // If keyword is one of the following, ignore keyword.
     if (preg_match("/^A$|^I$|^About$|^As$|^Of$|^Our$|^The$|^This$|^That$|^Is$|^Are$|^With$|^And$|^All$|^For$|^Your$|^Skip$|^To$|^Content$/i", $keyword)) {
@@ -335,7 +335,7 @@ function scrub_clever_seo_keyword($keyword) {
       }
       return trim(preg_replace("/  */", " ", $scubbed_keyword));
     }
-  }
+	}
 }
 
 /* Define the custom box */
@@ -377,24 +377,24 @@ function clever_keywords_inner_custom_box( $post ) {
 
   ?>
   <div id="clever_keywords_controls">
-    <p>Select the keywords you want by clicking on them and then save the page/post. The green keywords are currently being used, while the grey ones are not. Don't be a smarty bum and select all, that approach will harm your SEO score, please take your time per page and select the words that best represent each page.</p>
-    <ul id="possible_clever_keywords">
-      <?php
-      foreach ($possible_keywords as $keyword) {
-        ?>
-        <li><a <?php if (in_array($keyword, $current_keywords)) { echo("class='active'"); } ?> href="#"><?php echo($keyword); ?></a></li>
-        <?php
-      }
-      ?>
-    </ul>
-    <?php
-    echo '<input type="hidden" id="clever_keywords_new_field" name="clever_keywords_new_field" value="'.esc_attr($value).'" size="25" />
+  	<p>Select the keywords you want by clicking on them and then save the page/post. The green keywords are currently being used, while the grey ones are not. Don't be a smarty bum and select all, that approach will harm your SEO score, please take your time per page and select the words that best represent each page.</p>
+	  <ul id="possible_clever_keywords">
+	  	<?php
+		  foreach ($possible_keywords as $keyword) {
+		  	?>
+		  	<li><a <?php if (in_array($keyword, $current_keywords)) { echo("class='active'"); } ?> href="#"><?php echo($keyword); ?></a></li>
+		  	<?php
+		  }
+		  ?>
+		</ul>
+		<?php
+	  echo '<input type="hidden" id="clever_keywords_new_field" name="clever_keywords_new_field" value="'.esc_attr($value).'" size="25" />
     <p>If you are having any issues deselecting a keyword or any other issue, try and click the reset button.</p>
     <p><input type="button" name="action" value="Reset" id="reset_keywords"/> <input type="button" name="action" value="Save Changes" id="save_keywords" class="button button-primary button-large" /></p>
     ';
-  ?>
-  </div>
-  <?php
+	?>
+	</div>
+	<?php
 }
 
 /* When the post is saved, saves our custom data */
@@ -428,15 +428,15 @@ function clever_keywords_save_postdata( $post_id ) {
   // Check to see if page has parent.
   if ($post->post_parent) {
     // Page has parent, so create parent category first.
-    $id = wp_create_category(get_the_title($post->post_parent));
+    $id = wp_create_category(clever_seo_keywords_scrub_title(get_the_title($post->post_parent)));
     // Then create category of current page title.
-    $sub_id = wp_create_category(get_the_title($post_ID), $id);
+    $sub_id = wp_create_category(clever_seo_keywords_scrub_title(get_the_title($post_ID), $id));
 
     // wp_set_post_categories($post_ID, array($id));
     // wp_set_post_categories($post_ID, array($sub_id));
   } else {
     // Then create category of current page title.
-    $id = wp_create_category(get_the_title($post_ID));
+    $id = wp_create_category(clever_seo_keywords_scrub_title(get_the_title($post_ID)));
     // wp_set_post_categories($post_ID, array($id));
   }
 
@@ -445,6 +445,17 @@ function clever_keywords_save_postdata( $post_id ) {
   add_post_meta($post_ID, '_clever_seo_keywords_words', $mydata, true) or
     update_post_meta($post_ID, '_clever_seo_keywords_words', $mydata);
   // or a custom table (see Further Reading section below)
+}
+
+function clever_seo_keywords_scrub_title($title) {
+  $scubbed_title = "";
+  for($i=0; $i<strlen($title);$i++) {
+    // Check to see if next character is a capital.
+    if (preg_match("/[A-Z|a-z|0-9| |-|_|]/", $title{$i})) {
+      $scubbed_title .= $title{$i};
+    }
+  }
+  return $scubbed_title;
 }
 
 // Setup tags for pages. Set keywords as Tags.

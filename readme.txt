@@ -3,8 +3,8 @@ Contributors: MMDeveloper
 Donate link: 
 Tags: seo, plugin, keyword, keywords, meta, metadata, description
 Requires at least: 3.3
-Tested up to: 3.6
-Stable tag: 5.0
+Tested up to: 3.7
+Stable tag: 5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,7 +18,7 @@ This plugin uses Simple Html DOM, for info go to http://sourceforge.net/projects
 
 == Installation ==
 
-1) Install WordPress 3.6 or higher
+1) Install WordPress 3.7 or higher
 
 2) Download the latest from:
 
@@ -32,6 +32,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 
 == Changelog ==
+
+= 5.1 =
+
+* Fixed bug where saving title with non-alpha character crashed the site. Caused by setting a category name with a non-alpha character such as $. Now I just scrub all characters and only allow letters, numbers, dashes, spaces and underlines. Every other character is too dangerous to allow.
 
 = 5.0 =
 
@@ -92,6 +96,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 * Initial Commit
 
 == Upgrade notice ==
+
+= 5.1 =
+
+* Fixed bug where saving title with non-alpha character crashed the site. Caused by setting a category name with a non-alpha character such as $. Now I just scrub all characters and only allow letters, numbers, dashes, spaces and underlines. Every other character is too dangerous to allow.
 
 = 5.0 =
 
