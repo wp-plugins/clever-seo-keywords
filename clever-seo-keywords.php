@@ -18,7 +18,7 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 4) Activate the plugin.
 
-Version: 5.1
+Version: 5.2
 License: GPL2
 
 */
@@ -85,11 +85,16 @@ function clever_seo_keywords_get_ID_by_slug($page_slug) {
   if ($page_slug == "/") {
     return get_option("page_on_front");
   }
-  $page = get_page_by_path($page_slug);
+  $page = get_page_by_path($page_slug, OBJECT, "page");
   if ($page) {
       return $page->ID;
   } else {
+    $post = get_page_by_path($page_slug, OBJECT, "post");
+    if ($post) {
+      return $post->ID;
+    } else {
       return null;
+    }
   }
 }
 
