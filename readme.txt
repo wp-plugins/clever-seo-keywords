@@ -3,8 +3,8 @@ Contributors: MMDeveloper
 Donate link: 
 Tags: seo, plugin, keyword, keywords, meta, metadata, description
 Requires at least: 3.3
-Tested up to: 3.7
-Stable tag: 5.2
+Tested up to: 3.8
+Stable tag: 6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,11 +18,9 @@ This plugin uses Simple Html DOM, for info go to http://sourceforge.net/projects
 
 == Installation ==
 
-1) Install WordPress 3.7 or higher
+1) Install WordPress 3.8 or higher
 
 2) Download the latest from:
-
-http://wordpress.org/extend/plugins/tom-m8te 
 
 http://wordpress.org/extend/plugins/clever-seo-keywords
 
@@ -32,6 +30,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 
 == Changelog ==
+
+= 6.0 =
+
+* Removed Tom M8te dependency.
 
 = 5.2 =
 
@@ -100,6 +102,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 * Initial Commit
 
 == Upgrade notice ==
+
+= 6.0 =
+
+* Removed Tom M8te dependency.
 
 = 5.2 =
 
