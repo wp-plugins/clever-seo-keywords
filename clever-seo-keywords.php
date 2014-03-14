@@ -17,7 +17,7 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 4) Activate the plugin.
 
-Version: 6.0
+Version: 6.1
 License: GPL2
 
 */
@@ -95,9 +95,9 @@ function clever_seo_keywords_end_parsing_keywords_site() {
               if (!preg_match("/\.|\. $/", $temp)) {
                 $temp .= ". ";
               }
-              $html->find("meta[name=description]", 0)->setAttribute("content", $temp." Keywords: ".$postmeta_row->meta_value);
+              $html->find("meta[name=description]", 0)->setAttribute("content", CSEOKTomM8::token_truncate($temp." Keywords: ".$postmeta_row->meta_value, 160));
             } else {
-              $description_content = "<meta name=\"description\" content=\"Keywords: ".$postmeta_row->meta_value.".\" />";
+              $description_content = "<meta name=\"description\" content=\"".CSEOKTomM8::token_truncate("Keywords: ".$postmeta_row->meta_value, 160).".\" />";
             }
           }
         }

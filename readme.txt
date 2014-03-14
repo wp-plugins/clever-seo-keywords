@@ -4,7 +4,7 @@ Donate link:
 Tags: seo, plugin, keyword, keywords, meta, metadata, description
 Requires at least: 3.3
 Tested up to: 3.8
-Stable tag: 6.0
+Stable tag: 6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,6 +30,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 
 == Changelog ==
+
+= 6.1 =
+
+* Prevent long meta descriptions. The plugin now truncates your meta descriptions to 160 characters. So you basically can't go over 160 characters. Handy saver if you make a mistake and go over the limit.
 
 = 6.0 =
 
@@ -102,6 +106,10 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 * Initial Commit
 
 == Upgrade notice ==
+
+= 6.1 =
+
+* Prevent long meta descriptions. The plugin now truncates your meta descriptions to 160 characters. So you basically can't go over 160 characters. Handy saver if you make a mistake and go over the limit.
 
 = 6.0 =
 
