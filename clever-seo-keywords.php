@@ -6,7 +6,7 @@ Description: A wordpress plugin that allows you to auto create meta keywords and
 
 Installation:
 
-1) Install WordPress 3.8 or higher
+1) Install WordPress 3.9 or higher
 
 2) Download the latest from:
 
