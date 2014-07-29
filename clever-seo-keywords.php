@@ -17,7 +17,7 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 4) Activate the plugin.
 
-Version: 6.1
+Version: 6.2
 License: GPL2
 
 */
@@ -105,7 +105,9 @@ function clever_seo_keywords_end_parsing_keywords_site() {
 
       if ($keywords_content != "" || $description_content != "") {
         $e = $html->find("head", 0);
-        $e->outertext = $e->makeup().$e->innertext.$keywords_content.$description_content;
+        if ($e) {
+          $e->outertext = $e->makeup().$e->innertext.$keywords_content.$description_content;  
+        }        
       }
     }
 
