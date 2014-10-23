@@ -3,7 +3,7 @@ Contributors: MMDeveloper
 Donate link: 
 Tags: seo, plugin, keyword, keywords, meta, metadata, description
 Requires at least: 3.3
-Tested up to: 3.9
+Tested up to: 4.0
 Stable tag: 6.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -18,7 +18,7 @@ This plugin uses Simple Html DOM, for info go to http://sourceforge.net/projects
 
 == Installation ==
 
-1) Install WordPress 3.9 or higher
+1) Install WordPress 4.0 or higher
 
 2) Download the latest from:
 
