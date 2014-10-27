@@ -1,5 +1,5 @@
 === Clever SEO Keywords ===
-Contributors: MMDeveloper
+Contributors: MMDeveloper, The Marketing Mix Osborne Park Perth
 Donate link: 
 Tags: seo, plugin, keyword, keywords, meta, metadata, description
 Requires at least: 3.3
@@ -27,6 +27,9 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 3) Login to WordPress admin, click on Plugins / Add New / Upload, then upload the zip file you just downloaded.
 
 4) Activate the plugin.
+
+
+Built by The Marketing Mix Perth: http://www.marketingmix.com.au
 
 
 == Changelog ==
