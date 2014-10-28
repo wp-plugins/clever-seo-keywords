@@ -16,6 +16,8 @@ A wordpress plugin that allows you to create metadata keywords/description based
 
 This plugin uses Simple Html DOM, for info go to http://sourceforge.net/projects/simplehtmldom/
 
+Built by The Marketing Mix Perth: http://www.marketingmix.com.au
+
 == Installation ==
 
 1) Install WordPress 4.0 or higher
