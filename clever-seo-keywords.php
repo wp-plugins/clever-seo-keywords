@@ -6,7 +6,7 @@ Description: A wordpress plugin that allows you to auto create meta keywords and
 
 Installation:
 
-1) Install WordPress 3.9 or higher
+1) Install WordPress 4.1 or higher
 
 2) Download the latest from:
 
@@ -17,7 +17,7 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 
 4) Activate the plugin.
 
-Version: 6.2
+Version: 6.3
 License: GPL2
 
 */
@@ -77,30 +77,37 @@ function clever_seo_keywords_end_parsing_keywords_site() {
           meta_key = '_clever_seo_keywords_words' AND 
           post_id =".$cpostid)) {
       $html = str_get_html($content);
-      if ($html != "") {
-        if ($postmeta_row->meta_value != "") {
-          if ($html->find("meta[name=keywords]", 0)) {
-            $temp = $html->find("meta[name=keywords]", 0)->getAttribute("content");
-            if ($temp != "" && !preg_match("/,|, $/", $temp)) {
-              $temp .= ", ";
-            }
-            $html->find("meta[name=keywords]", 0)->setAttribute("content", $temp.$postmeta_row->meta_value);
-          } else {
-            $keywords_content = "<meta name=\"keywords\" content=\"".$postmeta_row->meta_value."\" />";
-          }
 
+      if ($html != "") {
+
+        if ($html->find("meta[name=keywords]", 0)) {
+          $temp = $html->find("meta[name=keywords]", 0)->getAttribute("content");
+          if ($temp != "" && !preg_match("/,|, $/", $temp)) {
+            $temp .= ", ";
+          }
+          if ($temp.$postmeta_row->meta_value != "") {
+            $html->find("meta[name=keywords]", 0)->setAttribute("content", $temp.$postmeta_row->meta_value);
+          }          
+        } else {
           if ($postmeta_row->meta_value != "") {
-            if ($html->find("meta[name=description]", 0)) {
-              $temp = $html->find("meta[name=description]", 0)->getAttribute("content");
-              if (!preg_match("/\.|\. $/", $temp)) {
-                $temp .= ". ";
-              }
-              $html->find("meta[name=description]", 0)->setAttribute("content", CSEOKTomM8::token_truncate($temp." Keywords: ".$postmeta_row->meta_value, 160));
-            } else {
-              $description_content = "<meta name=\"description\" content=\"".CSEOKTomM8::token_truncate("Keywords: ".$postmeta_row->meta_value, 160).".\" />";
-            }
+            $keywords_content = "<meta name=\"keywords\" content=\"".$postmeta_row->meta_value."\" />";
+          }          
+        }
+
+        if ($html->find("meta[name=description]", 0)) {
+          $temp = $html->find("meta[name=description]", 0)->getAttribute("content");
+          if (!preg_match("/\.|\. $/", $temp)) {
+            $temp .= ". ";
+          }
+          if ($temp.$postmeta_row->meta_value != "") {
+            $html->find("meta[name=description]", 0)->setAttribute("content", CSEOKTomM8::token_truncate($temp." Keywords: ".$postmeta_row->meta_value, 160));
+          }
+        } else {
+          if ($postmeta_row->meta_value != "") {
+            $description_content = "<meta name=\"description\" content=\"".CSEOKTomM8::token_truncate("Keywords: ".$postmeta_row->meta_value, 160).".\" />";
           }
         }
+
       }
 
       if ($keywords_content != "" || $description_content != "") {

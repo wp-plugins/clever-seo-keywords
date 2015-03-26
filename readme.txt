@@ -1,10 +1,10 @@
 === Clever SEO Keywords ===
-Contributors: MMDeveloper, The Marketing Mix Osborne Park Perth
+Contributors: MMDeveloper
 Donate link: 
 Tags: seo, plugin, keyword, keywords, meta, metadata, description
 Requires at least: 3.3
-Tested up to: 4.0
-Stable tag: 6.2
+Tested up to: 4.1
+Stable tag: 6.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,11 +16,9 @@ A wordpress plugin that allows you to create metadata keywords/description based
 
 This plugin uses Simple Html DOM, for info go to http://sourceforge.net/projects/simplehtmldom/
 
-Built by The Marketing Mix Perth: http://www.marketingmix.com.au
-
 == Installation ==
 
-1) Install WordPress 4.0 or higher
+1) Install WordPress 3.9 or higher
 
 2) Download the latest from:
 
@@ -31,10 +29,11 @@ http://wordpress.org/extend/plugins/clever-seo-keywords
 4) Activate the plugin.
 
 
-Built by The Marketing Mix Perth: http://www.marketingmix.com.au
-
-
 == Changelog ==
+
+= 6.3 = 
+
+* Testing this version.
 
 = 6.2 = 
 
@@ -115,6 +114,10 @@ Built by The Marketing Mix Perth: http://www.marketingmix.com.au
 * Initial Commit
 
 == Upgrade notice ==
+
+= 6.3 = 
+
+* Testing this version
 
 = 6.2 = 
 
